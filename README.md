@@ -1,6 +1,7 @@
 # Dryza
 
 Sitio web corporativo desarrollado con Astro y Tailwind CSS para presentar soluciones innovadoras en paneles de cielo y revestimientos arquitectónicos.
+Dryza Panels marketing website built with Astro and Tailwind CSS. Showcasing decorative anti-moisture ceiling systems, product collections, and installation solutions.
 
 ## 🚀 Tecnologías
 
