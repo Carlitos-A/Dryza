@@ -1,20 +1,42 @@
 ---
+import Header from "../shared/layout/Header.astro";
 import "../styles/global.css";
 
-const { title = "Dryza" } = Astro.props;
+interface Props {
+	title?: string;
+	description?: string;
+}
+
+const {
+	title = "Dryza | Paneles y revestimientos arquitectonicos",
+	description = "Soluciones decorativas antihumedad para muros y cielos arquitectonicos.",
+} = Astro.props;
 ---
 
 <!doctype html>
 <html lang="es">
 	<head>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
+		<meta charset="UTF-8" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+		<meta property="og:title" content={title} />
+
+		<meta property="og:description" content={description} />
+
+		<meta property="og:type" content="website" />
+
+		<meta property="og:image" content="/og-image.jpg" />
+
+		<meta name="twitter:card" content="summary_large_image" />
+
+		<link rel="icon" type="image/svg+xml" href="/logo-dryza.svg" />
+
 		<title>{title}</title>
 	</head>
-	<body>
+
+	<body class="min-h-screen bg-white text-gray-900 antialiased">
+		<Header />
 		<slot />
 	</body>
 </html>
