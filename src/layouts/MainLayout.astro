@@ -1,5 +1,6 @@
 ---
 import Header from "../shared/layout/Header.astro";
+import Footer from "../shared/layout/Footer.astro";
 import "../styles/global.css";
 
 interface Props {
@@ -8,13 +9,13 @@ interface Props {
 }
 
 const {
-	title = "Dryza | Paneles y revestimientos arquitectonicos",
-	description = "Soluciones decorativas antihumedad para muros y cielos arquitectonicos.",
+	title = "Dryza | Moisture-resistant ceiling systems",
+	description = "Moisture-resistant ceiling systems for architectural applications.",
 } = Astro.props;
 ---
 
 <!doctype html>
-<html lang="es">
+<html lang="en">
 	<head>
 		<meta charset="UTF-8" />
 
@@ -30,7 +31,7 @@ const {
 
 		<meta name="twitter:card" content="summary_large_image" />
 
-		<link rel="icon" type="image/svg+xml" href="/logo-dryza.svg" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
 		<title>{title}</title>
 	</head>
@@ -38,5 +39,6 @@ const {
 	<body class="min-h-screen bg-white text-gray-900 antialiased">
 		<Header />
 		<slot />
+		<Footer />
 	</body>
 </html>
