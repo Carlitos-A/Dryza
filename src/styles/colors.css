@@ -1,73 +1,90 @@
 @import "tailwindcss";
 
 @theme {
-   /* =========================
+  /* =========================
      BRAND COLORS
+     Basado en la paleta corporativa Dryza
      ========================= */
 
-   --color-primary: #83142c;
-   --color-primary-hover: #84182f;
+  --color-primary: #83142c;
+  --color-primary-hover: #6e1025;
+  --color-primary-active: #570c1d;
 
-   /* Escala del rojo corporativo */
-   --color-primary-50: #faf2f4;
-   --color-primary-100: #f4e2e7;
-   --color-primary-200: #e9c2cd;
-   --color-primary-300: #d99aaa;
-   --color-primary-400: #c56b82;
-   --color-primary-500: #a63a5b;
-   --color-primary-600: #83142c;
-   --color-primary-700: #6e1025;
-   --color-primary-800: #570c1d;
-   --color-primary-900: #3f0815;
+  /* Escala del rojo corporativo */
+  --color-primary-50: #fcf3f5;
+  --color-primary-100: #f8e1e7;
+  --color-primary-200: #efbfcc;
+  --color-primary-300: #e397aa;
+  --color-primary-400: #d16b85;
+  --color-primary-500: #b83c5f;
+  --color-primary-600: #83142c;
+  --color-primary-700: #6e1025;
+  --color-primary-800: #570c1d;
+  --color-primary-900: #3f0815;
+  --color-primary-950: #25040c;
 
-   /* =========================
+  /* =========================
+     CORPORATE WHITES
+     ========================= */
+
+  --color-white: #ffffff;
+  --color-off-white: #fdfcfc;
+  --color-warm-white: #faf7f8;
+
+  /* =========================
      NEUTRALS
+     Neutros levemente cálidos para que combinen con el rojo
      ========================= */
 
-   --color-white: #ffffff;
-   --color-off-white: #fdfcfc;
+  --color-neutral-50: #fafafa;
+  --color-neutral-100: #f5f3f3;
+  --color-neutral-200: #e8e4e5;
+  --color-neutral-300: #d6d0d2;
+  --color-neutral-400: #a99fa2;
+  --color-neutral-500: #7a7073;
+  --color-neutral-600: #5c5356;
+  --color-neutral-700: #40383b;
+  --color-neutral-800: #282326;
+  --color-neutral-900: #171315;
+  --color-neutral-950: #0c090a;
 
-   --color-gray-50: #fafafa;
-   --color-gray-100: #f5f5f5;
-   --color-gray-200: #e5e5e5;
-   --color-gray-300: #d4d4d4;
-   --color-gray-400: #a3a3a3;
-   --color-gray-500: #737373;
-   --color-gray-600: #525252;
-   --color-gray-700: #404040;
-   --color-gray-800: #262626;
-   --color-gray-900: #171717;
-
-   /* =========================
-     SEMANTIC COLORS
+  /* =========================
+     SEMANTIC LAYOUT COLORS
+     Para usar en la web sin pensar tanto en hexadecimales
      ========================= */
 
-   --color-background: #ffffff;
-   --color-surface: #fafafa;
-   --color-surface-secondary: #f5f5f5;
+  --color-background: #fdfcfc;
+  --color-background-muted: #faf7f8;
 
-   --color-text: #171717;
-   --color-text-secondary: #525252;
-   --color-text-muted: #737373;
+  --color-surface: #ffffff;
+  --color-surface-secondary: #f5f3f3;
+  --color-surface-strong: #171315;
 
-   --color-border: #e5e5e5;
-   --color-divider: #f0f0f0;
+  --color-text: #171315;
+  --color-text-secondary: #5c5356;
+  --color-text-muted: #7a7073;
+  --color-text-inverted: #ffffff;
 
-   /* =========================
-     STATES
-     ========================= */
+  --color-border: #e8e4e5;
+  --color-border-strong: #d6d0d2;
+  --color-divider: #f0ecee;
 
-   --color-success: #16a34a;
-   --color-warning: #ca8a04;
-   --color-error: #dc2626;
-   --color-info: #2563eb;
-
-   /* =========================
+  /* =========================
      CTA
      ========================= */
 
-   --color-cta: #83142c;
-   --color-cta-hover: #6e1025;
+  --color-cta: #83142c;
+  --color-cta-hover: #6e1025;
+  --color-cta-active: #570c1d;
+  --color-cta-text: #ffffff;
 
+  /* =========================
+     STATES
+     Mantenerlos funcionales, no necesariamente corporativos
+     ========================= */
 
+  --color-success: #16a34a;
+  --color-warning: #ca8a04;
+  --color-error: #dc2626;
+  --color-info: #2563eb;
 }
