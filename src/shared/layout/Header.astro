@@ -7,28 +7,35 @@ const navItems = [
 	{ href: "#tecnologia", label: "Technology" },
 	{ href: "#about", label: "About" },
 ];
-
 ---
 
-<header id=header class="sticky top-0 z-50 bg-white">
-	<div class="mx-auto flex w-full items-center px-4 sm:px-6 lg:px-8">
+<header
+	id="header"
+	data-header
+	data-active="false"
+	class="fixed inset-x-0 top-0 z-50 bg-transparent text-white transition-[background-color,box-shadow,backdrop-filter] delay-150 duration-650 ease-out data-[active=true]:bg-primary-950/95 data-[active=true]:shadow-lg data-[active=true]:shadow-neutral-950/20 data-[active=true]:backdrop-blur-xl motion-reduce:delay-0 motion-reduce:transition-none"
+>
+	<div
+		data-header-content
+		class="mx-auto flex h-24 w-full max-w-[1600px] items-center px-5 sm:px-8 lg:h-28 lg:px-10"
+	>
 		<a href="/" aria-label="Go to Dryza homepage" class="shrink-0">
 			<img
-				src="/icon.svg"
+				src="/icon2.svg"
 				alt="Logo de Dryza"
 				class="h-20 w-auto md:h-25"
 			/>
 		</a>
 
-		<div class="ml-auto hidden items-center gap-12 md:flex">
+		<div class="ml-auto hidden items-center gap-8 xl:gap-11 lg:flex">
 			<nav
-				class="flex items-center gap-9 text-base font-medium"
+				class="flex items-center gap-9 text-base font-medium xl:gap-9"
 				aria-label="Primary navigation"
 			>
 				{
 					navItems.map((item) => (
 						<a
-							class="transition hover:text-primary-hover"
+							class="relative py-2 text-white/90 transition-colors delay-75 duration-300 ease-out after:absolute after:inset-x-0 after:bottom-0 after:h-px after:origin-left after:scale-x-0 after:bg-primary-300 after:transition-transform after:delay-75 after:duration-300 after:ease-out hover:text-primary-200 hover:after:scale-x-100 focus-visible:text-primary-200 motion-reduce:delay-0 motion-reduce:transition-none motion-reduce:after:delay-0 motion-reduce:after:transition-none"
 							href={item.href}
 						>
 							{item.label}
@@ -38,82 +45,136 @@ const navItems = [
 			</nav>
 
 			<a
-				href="#contact"
-				class="inline-flex min-h-10 items-center justify-center rounded-md bg-cta px-4 text-sm font-bold text-white transition hover:bg-cta-hover"
+				href="#contacto"
+				class="inline-flex min-h-11 items-center gap-3 border border-white bg-primary/0 px-4 text-sm font-bold text-white/90 shadow-sm transition-[background-color,border-color,box-shadow] hover:text-primary-200 duration-300 ease-out hover:border-primary-500 hover:bg-primary-hover hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-200 motion-reduce:delay-0 motion-reduce:transition-none"
 			>
-				asdasd
+				Quote
+				<svg
+					viewBox="0 0 20 20"
+					class="size-4 fill-none"
+					stroke="currentColor"
+					stroke-width="1.8"
+					aria-hidden="true"
+				>
+					<path d="M4 10h12M11 5l5 5-5 5"></path>
+				</svg>
 			</a>
 		</div>
 
 		<button
 			type="button"
-
-			class="ml-auto inline-flex h-11 w-11 items-center justify-center rounded-md text-primary transition hover:border-primary-200 hover:bg-primary-50 md:hidden cursor-pointer"
+			class="ml-auto grid size-11 place-items-center rounded-full border border-primary-400 bg-primary/85 text-white backdrop-blur-sm transition-[background-color,border-color] delay-75 duration-300 ease-out hover:border-primary-300 hover:bg-primary-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-200 motion-reduce:delay-0 motion-reduce:transition-none lg:hidden"
 			aria-label="Open navigation menu"
 			aria-controls="mobile-menu"
 			aria-expanded="false"
 			data-menu-button
 		>
-			<span class="sr-only">Open menu</span>	
-			<span class="flex w-5 flex-col gap-1.5">
-				<span class="h-0.5 rounded-full bg-current"></span>
-				<span class="h-0.5 rounded-full bg-current"></span>
-				<span class="h-0.5 w-3 rounded-full bg-current"></span>
+			<span class="flex w-5 flex-col gap-1.5" aria-hidden="true">
+				<span
+					class="h-px w-full bg-white transition-transform duration-300 motion-reduce:transition-none"
+					data-menu-line></span>
+				<span
+					class="h-px w-full bg-white transition-transform duration-300 motion-reduce:transition-none"
+					data-menu-line></span>
+				<span
+					class="h-px w-3 self-end bg-white transition-transform duration-300 motion-reduce:transition-none"
+					data-menu-line></span>
 			</span>
 		</button>
 	</div>
 
 	<div
 		id="mobile-menu"
-		class="hidden bg-white md:hidden"
+		class="mx-5 hidden border border-white/15 bg-primary-950/95 p-3 shadow-2xl backdrop-blur-xl sm:mx-8 lg:hidden"
 		data-mobile-menu
 	>
 		<nav
-			class="flex flex-col text-base font-medium text-center sm:px-6"
-			aria-label="Primary mobile navigation"
+			class="flex flex-col text-center text-base font-medium"
+			aria-label="Navegación móvil"
 		>
 			{
 				navItems.map((item) => (
 					<a
-						class="rounded-md px-3 py-3 transition hover:bg-primary-50 hover:text-primary-hover"
+						class="border-b border-white/10 px-3 py-3.5 text-white/85 transition-[background-color,color] delay-75 duration-300 ease-out hover:bg-primary-900/70 hover:text-primary-200 focus-visible:bg-primary-900/70 focus-visible:text-primary-200 motion-reduce:delay-0 motion-reduce:transition-none"
 						href={item.href}
 					>
 						{item.label}
 					</a>
 				))
 			}
-
 			<a
-				href="/"
-				class="mt-3 inline-flex min-h-11 items-center justify-center rounded-md bg-cta px-4 text-sm font-bold text-white transition hover:bg-cta-hover"
+				href="#contacto"
+				class="mt-3 inline-flex min-h-12 items-center justify-center bg-cta px-4 text-sm font-bold text-white transition-colors delay-75 duration-300 ease-out hover:bg-cta-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-200 motion-reduce:delay-0 motion-reduce:transition-none"
 			>
-				asdasd
+				Quote
 			</a>
 		</nav>
 	</div>
 </header>
 
 <script>
-	const menuButton = document.querySelector("[data-menu-button]");
-	const mobileMenu = document.querySelector("[data-mobile-menu]");
+	const header = document.querySelector<HTMLElement>("[data-header]");
+	const menuButton =
+		document.querySelector<HTMLButtonElement>("[data-menu-button]");
+	const mobileMenu =
+		document.querySelector<HTMLElement>("[data-mobile-menu]");
+
+	let isScrolled = window.scrollY > 30;
+	let isHovering = false;
+	let isMenuOpen = false;
+
+	function updateHeader() {
+		const isActive = isScrolled || isHovering || isMenuOpen;
+		header?.setAttribute("data-active", String(isActive));
+	}
+
+	function closeMenu() {
+		isMenuOpen = false;
+		menuButton?.setAttribute("aria-expanded", "false");
+		menuButton?.setAttribute("aria-label", "Open navigation menu");
+		mobileMenu?.classList.add("hidden");
+		updateHeader();
+	}
+
+	window.addEventListener(
+		"scroll",
+		() => {
+			const nextScrolled = window.scrollY > 30;
+			if (nextScrolled !== isScrolled) {
+				isScrolled = nextScrolled;
+				updateHeader();
+			}
+		},
+		{ passive: true },
+	);
+
+	header?.addEventListener("mouseenter", () => {
+		isHovering = true;
+		updateHeader();
+	});
+
+	header?.addEventListener("mouseleave", () => {
+		isHovering = false;
+		updateHeader();
+	});
 
 	menuButton?.addEventListener("click", () => {
 		const isOpen = menuButton.getAttribute("aria-expanded") === "true";
+		isMenuOpen = !isOpen;
 
 		menuButton.setAttribute("aria-expanded", String(!isOpen));
 		menuButton.setAttribute(
 			"aria-label",
 			isOpen ? "Open navigation menu" : "Close navigation menu",
 		);
+
 		mobileMenu?.classList.toggle("hidden", isOpen);
+		updateHeader();
 	});
 
-	mobileMenu?.querySelectorAll("a").forEach((link) => {
-		link.addEventListener("click", () => {
-			menuButton?.setAttribute("aria-expanded", "false");
-			menuButton?.setAttribute("aria-label", "Open navigation menu");
-			mobileMenu.classList.add("hidden");
-		});
-	});
+	mobileMenu
+		?.querySelectorAll("a")
+		.forEach((link) => link.addEventListener("click", closeMenu));
+
+	updateHeader();
 </script>
-
