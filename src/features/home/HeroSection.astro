@@ -30,7 +30,7 @@ const slides = [
 			slides.map((slide, index) => (
 				<img
 					src={slide.src.src}
-					alt=""
+					alt={slide.alt}
 					width={slide.src.width}
 					height={slide.src.height}
 					loading={index === 0 ? "eager" : "lazy"}
@@ -86,10 +86,6 @@ const slides = [
 				href="#contacto"
 				class="group relative mt-9 inline-flex min-h-13 items-center gap-3 overflow-hidden rounded-full bg-cta pl-7 pr-2.5 py-2.5 text-sm font-bold tracking-wide text-white shadow-lg shadow-cta/30 transition duration-300 ease-out hover:-translate-y-0.5 hover:bg-cta-hover hover:shadow-xl hover:shadow-cta/40 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white sm:text-base"
 			>
-				<span
-					class="pointer-events-none absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/25 to-transparent transition-transform duration-700 ease-out group-hover:translate-x-full"
-					aria-hidden="true"
-				></span>
 				Get Your Free Quote
 				<span
 					class="grid size-9 place-items-center rounded-full bg-white/15 transition-transform duration-300 group-hover:translate-x-0.5"
