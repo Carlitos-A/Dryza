@@ -1,0 +1,444 @@
+﻿---
+import type { ImageMetadata } from "astro";
+import PanelImage from "../../shared/ui/PanelImage.astro";
+
+interface PanelDesign {
+	slug: string;
+	name: string;
+	tag: string;
+	paragraphs: string[];
+}
+
+const designs: PanelDesign[] = [
+	{
+		slug: "aura",
+		name: "Aura",
+		tag: "Geometric relief",
+		paragraphs: [
+			"The Aura panel is a decorative ceiling tile featuring a three-dimensional geometric design that combines contemporary elegance with a distinctive architectural character. Its central star-shaped relief creates a dynamic play of light and shadow, adding visual depth and a refined sense of sophistication to any space.",
+			"This design conveys a modern, refined, and luminous aesthetic, ideal for environments that aim to stand out with personality while maintaining visual harmony.",
+			"Designed for ceilings or decorative surface applications, the Aura Star panel transforms ordinary surfaces into a striking visual element, elevating the overall perception of the space with a clean and structured style.",
+		],
+	},
+	{
+		slug: "diamonds",
+		name: "Diamonds",
+		tag: "Faceted brilliance",
+		paragraphs: [
+			"The Diamonds panel is a decorative ceiling tile featuring a sophisticated geometric design inspired by the brilliance and symmetry of cut diamonds. Its multidirectional relief pattern creates a striking play of light and shadow, adding depth, texture, and visual movement to any interior space.",
+			"The faceted lines radiate from each corner toward the center, evoking the elegance and precision found in fine gemstones. This design gives ceilings a luxurious, modern, and architectural presence, turning an ordinary surface into a refined visual statement.",
+			"The Diamonds panel brings a sense of brilliance and structure to interiors, making spaces feel more dynamic, elegant, and elevated.",
+		],
+	},
+	{
+		slug: "rio",
+		name: "Río",
+		tag: "Fluid movement",
+		paragraphs: [
+			"The Río panel is a decorative ceiling tile featuring a three-dimensional design inspired by the natural movement of flowing water. Its curved embossed lines create a fluid pattern that evokes the gentle motion of river currents, producing a refined play of light and shadow that adds depth and visual movement to any space.",
+			"The design conveys a sense of continuous flow, balance, and harmony, transforming the ceiling into an architectural feature full of character. The wave-like composition introduces a contemporary aesthetic that softens interiors and creates spaces that feel modern, calm, and sophisticated.",
+			"The Río panel transforms simple surfaces into a visually engaging element where texture and design come together to elevate the overall atmosphere of the space.",
+		],
+	},
+	{
+		slug: "isla",
+		name: "Isla",
+		tag: "Minimal texture",
+		paragraphs: [
+			"The Isla panel is a decorative ceiling tile featuring a clean and minimal design highlighted by a subtle radial texture. Inspired by the calm simplicity of natural landscapes, its soft relief creates a gentle play of light that adds depth without overwhelming the space.",
+			"Unlike more ornamental designs, Isla offers a discreet and elegant aesthetic, making it ideal for environments that seek a clean, bright, and balanced appearance without overly decorative elements.",
+			"This model is perfect for projects where functionality and material performance are the priority, especially in spaces that require moisture-resistant technology, while maintaining a simple and refined visual style.",
+			"The Isla panel proves that simplicity can still create visual impact, transforming ordinary ceilings into surfaces that feel modern, harmonious, and naturally elegant.",
+		],
+	},
+	{
+		slug: "mediterraneo",
+		name: "Mediterráneo",
+		tag: "Framed elegance",
+		paragraphs: [
+			"The Mediterráneo panel is a decorative ceiling tile featuring a refined and balanced design inspired by the timeless architecture of Mediterranean coastal regions. Its geometric framed relief creates a clean and structured composition that adds visual depth while maintaining a calm and elegant appearance.",
+			"The smooth center allows the surrounding textured frame to subtly capture light, producing a sophisticated visual effect that conveys harmony, balance, and understated elegance.",
+			"This model blends classic and contemporary aesthetics, making it an excellent choice for interiors that seek elegance without excessive ornamentation. The Mediterráneo panel transforms simple ceilings into architectural surfaces with presence and refined character.",
+		],
+	},
+];
+
+// Drop an image named after a design's slug (e.g. `aura.jpg`) into
+// src/assets/images/panels/ and it will replace the placeholder automatically
+// — no code changes needed.
+const panelImages = import.meta.glob<{ default: ImageMetadata }>(
+	"../../assets/images/panels/*.svg",
+	{ eager: true },
+);
+
+function getPanelImage(slug: string): ImageMetadata | undefined {
+	const match = Object.entries(panelImages).find(([path]) => {
+		const filename = path.split("/").pop() ?? "";
+		return filename.replace(/\.[^.]+$/, "") === slug;
+	});
+
+	return match?.[1].default;
+}
+
+// Inverted-pyramid (flat-top) layout on large screens: a 6-column grid where
+// each card spans 2 columns. The top row holds 3 cards (columns 1, 3, 5) and
+// the bottom row holds 2 cards offset by one column (columns 2, 4) so they sit
+// centered under the gaps between the top cards. Class strings must stay literal
+// so Tailwind can detect them.
+const gridPlacement = [
+	"lg:col-start-1 lg:row-start-1",
+	"lg:col-start-3 lg:row-start-1",
+	"lg:col-start-5 lg:row-start-1",
+	"lg:col-start-2 lg:row-start-2",
+	"lg:col-start-4 lg:row-start-2",
+];
+---
+
+<section id="paneles" class="bg-neutral-950 text-white">
+	<div class="mx-auto max-w-7xl px-5 py-20 sm:px-8 lg:px-10 lg:py-28">
+		<div class="mx-auto max-w-3xl text-center">
+			<p
+				class="text-xs font-semibold uppercase tracking-[0.28em] text-primary-300 sm:text-sm"
+			>
+				Panel Collection
+			</p>
+			<h2 class="mt-4 text-3xl font-semibold tracking-tight sm:text-4xl">
+				Five designs, five stories
+			</h2>
+			<p class="mt-4 text-base leading-7 text-white/70">
+				Click a panel to discover the inspiration and character behind
+				its design.
+			</p>
+		</div>
+
+		<ul class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-6">
+			{
+				designs.map((design, index) => (
+					<li
+						data-animate
+						style={`--reveal-delay: ${index * 90}ms;`}
+						class={`lg:col-span-2 ${gridPlacement[index]}`}
+					>
+						<button
+							type="button"
+							data-open-design={`design-${design.slug}`}
+							aria-haspopup="dialog"
+							class="cursor-pointer group flex h-full w-full flex-col overflow-hidden rounded-4xl border border-white/10 bg-white/5 text-left transition duration-300 hover:-translate-y-1 hover:border-primary-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-400/50"
+						>
+							<div class="relative aspect-4/3 overflow-hidden bg-linear-to-b from-neutral-900 to-neutral-950">
+								<span
+									aria-hidden="true"
+									class="pointer-events-none absolute inset-0"
+								/>
+								<PanelImage
+									src={getPanelImage(design.slug)}
+									alt={`${design.name} decorative panel`}
+									fit="contain"
+									class="relative z-10 p-5 drop-shadow-[0_18px_30px_rgba(0,0,0,0.45)] transition-transform duration-500 group-hover:scale-[1.04]"
+								/>
+							</div>
+
+							<div class="flex flex-1 flex-col gap-2 px-5 py-5 sm:px-6">
+								<p class="text-xs font-semibold uppercase tracking-[0.24em] text-primary-200">
+									{design.tag}
+								</p>
+								<h3 class="text-lg font-semibold text-white">
+									{design.name}
+								</h3>
+								<span class="mt-auto inline-flex w-fit items-center gap-2 pt-2 text-xs font-semibold uppercase tracking-[0.2em] text-white/60 transition group-hover:text-primary-200">
+									View story
+									<svg
+										viewBox="0 0 20 20"
+										class="size-3.5 fill-none"
+										stroke="currentColor"
+										stroke-width="1.8"
+										aria-hidden="true"
+									>
+										<path d="M4 10h12M11 5l5 5-5 5" />
+									</svg>
+								</span>
+							</div>
+						</button>
+					</li>
+				))
+			}
+		</ul>
+	</div>
+
+	{
+		designs.map((design) => (
+			<dialog
+				id={`design-${design.slug}`}
+				data-design-dialog
+				aria-labelledby={`design-${design.slug}-title`}
+				class="relative m-auto w-full max-w-2xl overflow-visible rounded-4xl border border-white/10 bg-transparent p-0 text-white shadow-2xl backdrop:bg-neutral-950/80 backdrop:backdrop-blur-sm"
+			>
+				<button
+					type="button"
+					data-close-dialog
+					aria-label="Cerrar"
+					class="absolute right-3 top-3 z-30 grid size-9 place-items-center rounded-full border border-white/15 bg-neutral-950/60 text-white/70 backdrop-blur transition hover:border-primary-400 hover:text-primary-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-200"
+				>
+					<svg
+						viewBox="0 0 20 20"
+						class="size-4 fill-none"
+						stroke="currentColor"
+						stroke-width="1.8"
+						aria-hidden="true"
+					>
+						<path d="m5 5 10 10M15 5 5 15" />
+					</svg>
+				</button>
+
+				<div class="flip-scene">
+					<div data-flip class="flip-card">
+						{/* Front: the panel on a transparent background */}
+						<div class="flip-face flip-front relative grid min-h-96 place-items-center overflow-hidden rounded-4xl border border-white/10 bg-neutral-950">
+							<span
+								aria-hidden="true"
+								class="pointer-events-none absolute inset-0 bg-radial-[at_50%_-10%] from-primary-500/25 via-primary-900/10 to-transparent to-70%"
+							/>
+							<PanelImage
+								src={getPanelImage(design.slug)}
+								alt={`${design.name} decorative panel`}
+								fit="contain"
+								class="relative z-10 p-8 drop-shadow-[0_18px_30px_rgba(0,0,0,0.45)]"
+							/>
+							<span class="pointer-events-none absolute bottom-4 z-10 text-[0.65rem] font-semibold uppercase tracking-[0.24em] text-white/45">
+								Toca para volver a girar
+							</span>
+						</div>
+
+						{/* Back: the story */}
+						<div class="flip-face flip-back flex max-h-[85vh] flex-col gap-4 overflow-y-auto rounded-4xl border border-white/10 bg-neutral-950 px-6 py-10 sm:px-10 sm:py-12">
+							<p class="text-xs font-semibold uppercase tracking-[0.28em] text-primary-300">
+								{design.tag}
+							</p>
+							<h3
+								id={`design-${design.slug}-title`}
+								class="text-2xl font-semibold sm:text-3xl"
+							>
+								{design.name}
+							</h3>
+
+							<div class="space-y-4 pr-2 text-sm leading-7 text-white/75 sm:text-base">
+								{design.paragraphs.map((paragraph) => (
+									<p>{paragraph}</p>
+								))}
+							</div>
+						</div>
+					</div>
+				</div>
+			</dialog>
+		))
+	}
+</section>
+
+<script>
+	const prefersReducedMotion = window.matchMedia(
+		"(prefers-reduced-motion: reduce)",
+	).matches;
+
+	document
+		.querySelectorAll<HTMLButtonElement>("[data-open-design]")
+		.forEach((button) => {
+			button.addEventListener("click", () => {
+				const dialog = document.getElementById(
+					button.dataset.openDesign ?? "",
+				);
+
+				if (!(dialog instanceof HTMLDialogElement)) return;
+
+				const card = dialog.querySelector<HTMLElement>("[data-flip]");
+				card?.classList.remove("is-flipped");
+				dialog.showModal();
+
+				// Grow first, then flip to reveal the story on the back. Under
+				// reduced motion, land on the story immediately (no transition).
+				if (prefersReducedMotion) {
+					card?.classList.add("is-flipped");
+				} else {
+					window.setTimeout(
+						() => card?.classList.add("is-flipped"),
+						420,
+					);
+				}
+			});
+		});
+
+	document
+		.querySelectorAll<HTMLDialogElement>("[data-design-dialog]")
+		.forEach((dialog) => {
+			const card = dialog.querySelector<HTMLElement>("[data-flip]");
+
+			dialog
+				.querySelector("[data-close-dialog]")
+				?.addEventListener("click", (event) => {
+					event.stopPropagation();
+					dialog.close();
+				});
+
+			// Click the card to flip between the panel and its story.
+			card?.addEventListener("click", (event) => {
+				if ((event.target as HTMLElement).closest("[data-close-dialog]"))
+					return;
+				card.classList.toggle("is-flipped");
+			});
+
+			dialog.addEventListener("click", (event) => {
+				if (event.target === dialog) {
+					dialog.close();
+				}
+			});
+
+			// Reset to the panel side so the next open replays the flip.
+			dialog.addEventListener("close", () =>
+				card?.classList.remove("is-flipped"),
+			);
+		});
+
+	const revealTargets =
+		document.querySelectorAll<HTMLElement>("[data-animate]");
+
+	// When the browser supports CSS scroll-driven animations, the reveal is
+	// tied directly to scroll position via `animation-timeline: view()` (see
+	// the <style> block) — no JS needed.
+	const supportsScrollTimeline =
+		"CSS" in window && CSS.supports("animation-timeline", "view()");
+
+	if (prefersReducedMotion || supportsScrollTimeline) {
+		// Reduced motion and scroll-driven reveal are both handled in CSS.
+	} else if ("IntersectionObserver" in window) {
+		// Fallback: play the one-shot staggered fade as each card enters view.
+		const observer = new IntersectionObserver(
+			(entries, obs) => {
+				entries.forEach((entry) => {
+					if (entry.isIntersecting) {
+						entry.target.classList.add("is-visible");
+						obs.unobserve(entry.target);
+					}
+				});
+			},
+			{ threshold: 0.15, rootMargin: "0px 0px -10% 0px" },
+		);
+
+		revealTargets.forEach((el) => observer.observe(el));
+	} else {
+		// Oldest browsers: show everything immediately.
+		revealTargets.forEach((el) => el.classList.add("is-visible"));
+	}
+</script>
+
+<style>
+	@keyframes reveal-on-scroll {
+		from {
+			opacity: 0;
+			transform: translateX(4rem);
+		}
+		to {
+			opacity: 1;
+			transform: none;
+		}
+	}
+
+	/* Fallback (no scroll-driven animation support): the IntersectionObserver
+	   toggles `.is-visible`, playing a one-shot staggered fade on entry. */
+	[data-animate] {
+		opacity: 0;
+		transform: translateX(4rem);
+		transition:
+			opacity 0.7s ease-out,
+			transform 0.7s ease-out;
+		transition-delay: var(--reveal-delay, 0ms);
+		will-change: opacity, transform;
+	}
+
+	[data-animate].is-visible {
+		opacity: 1;
+		transform: none;
+	}
+
+	/* Modern browsers: scrub the reveal against scroll position so each card
+	   fades and slides in as it travels up through the viewport, and reverses
+	   when scrolling back up. */
+	@supports (animation-timeline: view()) {
+		[data-animate] {
+			opacity: 1;
+			transform: none;
+			transition: none;
+			animation: reveal-on-scroll linear both;
+			animation-timeline: view();
+			animation-range: entry 10% cover 35%;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		[data-animate] {
+			opacity: 1;
+			transform: none;
+			transition: none;
+			animation: none;
+		}
+	}
+
+	/* Story dialog: grow the whole card in from small each time it opens. */
+	dialog[data-design-dialog] {
+		opacity: 0;
+		transform: scale(0.6);
+		transition:
+			opacity 0.4s ease,
+			transform 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+			display 0.5s ease allow-discrete,
+			overlay 0.5s ease allow-discrete;
+	}
+
+	dialog[data-design-dialog][open] {
+		opacity: 1;
+		transform: scale(1);
+	}
+
+	@starting-style {
+		dialog[data-design-dialog][open] {
+			opacity: 0;
+			transform: scale(0.6);
+		}
+	}
+
+	/* 3D flip: the panel is the front face, the story is on the back. Adding
+	   `.is-flipped` (via JS, once the grow settles) rotates the card to reveal
+	   the information. */
+	.flip-scene {
+		perspective: 1600px;
+	}
+
+	.flip-card {
+		display: grid;
+		transform-style: preserve-3d;
+		transition: transform 0.85s cubic-bezier(0.22, 1, 0.36, 1);
+	}
+
+	.flip-card.is-flipped {
+		transform: rotateY(180deg);
+	}
+
+	.flip-face {
+		grid-area: 1 / 1;
+		backface-visibility: hidden;
+		-webkit-backface-visibility: hidden;
+	}
+
+	.flip-back {
+		transform: rotateY(180deg);
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		dialog[data-design-dialog] {
+			transform: none;
+			transition: none;
+		}
+
+		.flip-card {
+			transition: none;
+		}
+	}
+</style>
