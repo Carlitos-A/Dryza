@@ -1,0 +1,158 @@
+---
+import PanelImage from "../../shared/ui/PanelImage.astro";
+import { getPanelImage, type PanelDesign } from "./designs";
+
+interface Props {
+	design: PanelDesign;
+}
+
+const { design } = Astro.props;
+const image = getPanelImage(design.slug);
+// Destino de la página dedicada a cada diseño (aún por crear).
+const href = `/disenos/${design.slug}`;
+---
+
+<a
+	href={href}
+	class="panel-card group relative flex h-full flex-col overflow-hidden rounded-4xl border border-white/10 bg-white/5 text-left focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-300"
+>
+	<div
+		class="panel-frame relative aspect-4/3 overflow-hidden bg-linear-to-b from-neutral-900 to-neutral-950"
+	>
+		{/* Halo que se enciende detrás del panel al pasar el cursor */}
+		<span aria-hidden="true" class="panel-glow" />
+
+		<PanelImage
+			src={image}
+			alt={`Panel decorativo ${design.name}`}
+			fit="contain"
+			class="panel-art relative z-10 p-5 drop-shadow-[0_18px_30px_rgba(0,0,0,0.45)]"
+		/>
+
+	</div>
+
+	<div class="relative z-10 flex flex-1 flex-col gap-2 px-5 py-5 sm:px-6">
+		<p
+			class="text-xs font-semibold uppercase tracking-[0.24em] text-primary-200"
+		>
+			{design.tag}
+		</p>
+		<h3
+			class="text-lg font-semibold text-white transition-colors duration-300 group-hover:text-primary-100"
+		>
+			{design.name}
+		</h3>
+		<span
+			class="panel-cta mt-auto inline-flex w-fit items-center gap-2 pt-2 text-xs font-semibold uppercase tracking-[0.2em] text-white/60 transition-colors duration-300 group-hover:text-primary-200"
+		>
+			See details
+			<svg
+				viewBox="0 0 20 20"
+				class="panel-arrow size-3.5 fill-none"
+				stroke="currentColor"
+				stroke-width="1.8"
+				aria-hidden="true"
+			>
+				<path d="M4 10h12M11 5l5 5-5 5" />
+			</svg>
+		</span>
+	</div>
+</a>
+
+<style>
+	/* La tarjeta completa es el enlace: al pasar el cursor se eleva, se agranda
+	   ligeramente y gana un borde y una sombra con el rojo corporativo. */
+	.panel-card {
+		--ease-out-back: cubic-bezier(0.22, 1, 0.36, 1);
+		transform-origin: center bottom;
+		transition:
+			transform 0.5s var(--ease-out-back),
+			border-color 0.4s ease,
+			box-shadow 0.5s ease,
+			background-color 0.4s ease;
+		will-change: transform;
+	}
+
+	.panel-card:hover,
+	.panel-card:focus-visible {
+		transform: translateY(-0.75rem) scale(1.07);
+		background-color: rgba(255, 255, 255, 0.08);
+		box-shadow:
+			0 28px 60px -20px rgba(0, 0, 0, 0.85),
+			0 0 0 1px rgba(255, 255, 255, 0.04),
+			0 18px 45px -25px var(--color-primary-500);
+	}
+
+	/* Halo radial detrás del panel. */
+	.panel-glow {
+		position: absolute;
+		inset: -20%;
+		z-index: 0;
+		background: radial-gradient(
+			circle at 50% 45%,
+			color-mix(in srgb, var(--color-primary-500) 55%, transparent),
+			transparent 65%
+		);
+		opacity: 0;
+		transform: scale(0.8);
+		transition:
+			opacity 0.5s ease,
+			transform 0.6s var(--ease-out-back);
+	}
+
+	.panel-card:hover .panel-glow,
+	.panel-card:focus-visible .panel-glow {
+		opacity: 1;
+		transform: scale(1);
+	}
+
+	/* La lámina se acerca y se inclina apenas, dando sensación de relieve.
+	   `:global` porque la clase viaja como prop hasta <PanelImage />. */
+	.panel-card :global(.panel-art) {
+		transition:
+			transform 0.6s var(--ease-out-back),
+			filter 0.5s ease;
+	}
+
+	.panel-card:hover :global(.panel-art),
+	.panel-card:focus-visible :global(.panel-art) {
+		transform: scale(1.08) rotate(-1.2deg);
+		filter: drop-shadow(0 24px 38px rgba(0, 0, 0, 0.55)) brightness(1.06);
+	}
+
+
+	.panel-card:hover,
+	.panel-card:focus-visible {
+		opacity: 1;
+		background-position: -50% 0;
+	}
+
+	/* La flecha del CTA avanza junto con el hover. */
+	.panel-arrow {
+		transition: transform 0.4s var(--ease-out-back);
+	}
+
+	.panel-card:hover .panel-arrow,
+	.panel-card:focus-visible .panel-arrow {
+		transform: translateX(0.35rem);
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.panel-card,
+		.panel-glow,
+		.panel-arrow,
+		.panel-card :global(.panel-art) {
+			transition: none;
+		}
+
+		.panel-card:hover,
+		.panel-card:focus-visible {
+			transform: none;
+		}
+
+		.panel-card:hover :global(.panel-art),
+		.panel-card:focus-visible :global(.panel-art) {
+			transform: none;
+		}
+	}
+</style>

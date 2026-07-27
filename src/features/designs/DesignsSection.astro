@@ -1,0 +1,137 @@
+﻿---
+import { designs } from "./designs";
+import PanelCard from "./PanelCard.astro";
+
+// Inverted-pyramid (flat-top) layout on large screens: a 6-column grid where
+// each card spans 2 columns. The top row holds 3 cards (columns 1, 3, 5) and
+// the bottom row holds 2 cards offset by one column (columns 2, 4) so they sit
+// centered under the gaps between the top cards. Class strings must stay literal
+// so Tailwind can detect them. On smaller screens the cards stack in source order.
+const gridPlacement = [
+	"lg:col-start-1 lg:row-start-1",
+	"lg:col-start-3 lg:row-start-1",
+	"lg:col-start-5 lg:row-start-1",
+	"lg:col-start-2 lg:row-start-2",
+	"lg:col-start-4 lg:row-start-2",
+];
+---
+
+<section id="paneles" class="bg-neutral-950 text-white">
+	<div class="mx-auto max-w-7xl px-5 py-20 sm:px-8 lg:px-10 lg:py-28">
+		<div class="mx-auto max-w-3xl text-center">
+			<p
+				data-animate
+				style="--reveal-delay: 0ms;"
+				class="text-xs font-semibold uppercase tracking-[0.28em] text-primary-300 sm:text-sm"
+			>
+				Panel Collection
+			</p>
+			<h2
+				data-animate
+				style="--reveal-delay: 90ms;"
+				class="mt-4 text-3xl font-semibold tracking-tight sm:text-4xl"
+			>
+				Five designs, Five stories
+			</h2>
+			<p
+				data-animate
+				style="--reveal-delay: 180ms;"
+				class="mt-4 text-base leading-7 text-white/70"
+			>
+				Choose a panel to enter its page and discover the story behind
+				its design.
+			</p>
+		</div>
+
+		<ul class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-6">
+			{
+				designs.map((design, index) => (
+					<li
+						data-animate
+						style={`--reveal-delay: ${index * 90}ms;`}
+						class={`lg:col-span-2 ${gridPlacement[index]}`}
+					>
+						<PanelCard design={design} />
+					</li>
+				))
+			}
+		</ul>
+	</div>
+</section>
+
+<script>
+	import "./revealOnScroll";
+</script>
+
+<style>
+	@keyframes reveal-on-scroll {
+		from {
+			opacity: 0;
+			transform: translateX(4rem);
+		}
+		to {
+			opacity: 1;
+			transform: none;
+		}
+	}
+
+	@keyframes reveal-heading {
+		from {
+			opacity: 0;
+			transform: translateY(1rem);
+		}
+		to {
+			opacity: 1;
+			transform: none;
+		}
+	}
+
+	/* Fallback (no scroll-driven animation support): the IntersectionObserver
+	   toggles `.is-visible`, playing a one-shot staggered fade on entry. */
+	[data-animate] {
+		opacity: 0;
+		transform: translateX(4rem);
+		transition:
+			opacity 0.7s ease-out,
+			transform 0.7s ease-out;
+		transition-delay: var(--reveal-delay, 0ms);
+		will-change: opacity, transform;
+	}
+
+	[data-animate].is-visible {
+		opacity: 1;
+		transform: none;
+	}
+
+
+	/* Modern browsers: scrub the reveal against scroll position so each card
+	   fades and slides in as it travels up through the viewport, and reverses
+	   when scrolling back up. */
+	@supports (animation-timeline: view()) {
+		[data-animate] {
+			opacity: 1;
+			transform: none;
+			transition: none;
+			animation: reveal-on-scroll linear both;
+			animation-timeline: view();
+			animation-range: entry 10% cover 35%;
+		}
+	}
+
+	/* La tarjeta crece al hacer hover: su celda sube por encima de las vecinas
+	   para que el halo y la sombra no queden recortados. */
+	li:hover,
+	li:focus-within {
+		position: relative;
+		z-index: 20;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		[data-animate] {
+			opacity: 1;
+			transform: none;
+			transition: none;
+			animation: none;
+		}
+	}
+</style>

@@ -13,17 +13,18 @@ const navItems = [
 	id="header"
 	data-header
 	data-active="false"
+	data-menu="closed"
 	class="fixed inset-x-0 top-0 z-50 bg-transparent text-white transition-[background-color,box-shadow,backdrop-filter] delay-150 duration-650 ease-out data-[active=true]:bg-neutral-900/95 data-[active=true]:shadow-lg data-[active=true]:shadow-neutral-950/20 data-[active=true]:backdrop-blur-xl motion-reduce:delay-0 motion-reduce:transition-none"
 >
 	<div
 		data-header-content
-		class="mx-auto flex h-24 w-full max-w-[1600px] items-center px-5 sm:px-8 lg:h-28 lg:px-10"
+		class="mx-auto flex h-20 w-full max-w-[1600px] items-center px-5 sm:h-24 sm:px-8 lg:h-28 lg:px-10"
 	>
 		<a href="/" aria-label="Go to Dryza homepage" class="shrink-0">
 			<img
 				src="/icon2.svg"
 				alt="Logo de Dryza"
-				class="h-20 w-auto md:h-25"
+				class="h-14 w-auto sm:h-16 md:h-20 lg:h-25"
 			/>
 		</a>
 
@@ -61,55 +62,85 @@ const navItems = [
 			</a>
 		</div>
 
+		{/* Disparador del menú: mismo lenguaje visual que el CTA de escritorio
+		    (borde fino, fondo transparente, esquinas rectas). */}
 		<button
 			type="button"
-			class="ml-auto grid size-11 place-items-center rounded-full border border-primary-400 bg-primary/85 text-white backdrop-blur-sm transition-[background-color,border-color] delay-75 duration-300 ease-out hover:border-primary-300 hover:bg-primary-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-200 motion-reduce:delay-0 motion-reduce:transition-none lg:hidden"
+			class="menu-button ml-auto grid size-11 place-items-center border border-white/70 text-white transition-[background-color,border-color,color] duration-300 ease-out hover:border-primary-500 hover:bg-primary-hover hover:text-primary-200 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-200 motion-reduce:transition-none lg:hidden"
 			aria-label="Open navigation menu"
 			aria-controls="mobile-menu"
 			aria-expanded="false"
 			data-menu-button
 		>
-			<span class="flex w-5 flex-col gap-1.5" aria-hidden="true">
-				<span
-					class="h-px w-full bg-white transition-transform duration-300 motion-reduce:transition-none"
-					data-menu-line></span>
-				<span
-					class="h-px w-full bg-white transition-transform duration-300 motion-reduce:transition-none"
-					data-menu-line></span>
-				<span
-					class="h-px w-3 self-end bg-white transition-transform duration-300 motion-reduce:transition-none"
-					data-menu-line></span>
+			<span class="menu-icon" aria-hidden="true">
+				<span class="menu-line"></span>
+				<span class="menu-line"></span>
+				<span class="menu-line"></span>
 			</span>
 		</button>
 	</div>
 
-	<div
-		id="mobile-menu"
-		class="mx-5 hidden border border-white/15 bg-primary-950/95 p-3 shadow-2xl backdrop-blur-xl sm:mx-8 lg:hidden"
-		data-mobile-menu
-	>
-		<nav
-			class="flex flex-col text-center text-base font-medium"
-			aria-label="Navegación móvil"
-		>
-			{
-				navItems.map((item) => (
-					<a
-						class="border-b border-white/10 px-3 py-3.5 text-white/85 transition-[background-color,color] delay-75 duration-300 ease-out hover:bg-primary-900/70 hover:text-primary-200 focus-visible:bg-primary-900/70 focus-visible:text-primary-200 motion-reduce:delay-0 motion-reduce:transition-none"
-						href={item.href}
-					>
-						{item.label}
-					</a>
-				))
-			}
-			<a
-				href="#contacto"
-				class="mt-3 inline-flex min-h-12 items-center justify-center bg-cta px-4 text-sm font-bold text-white transition-colors delay-75 duration-300 ease-out hover:bg-cta-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-200 motion-reduce:delay-0 motion-reduce:transition-none"
+	{/* Panel desplegable: se abre animando su altura (grid 0fr → 1fr) en vez de
+	    aparecer de golpe con `hidden`. */}
+	<div id="mobile-menu" class="mobile-menu" data-mobile-menu>
+		<div class="mobile-menu-clip">
+			<div
+				class="mx-5 mb-4 overflow-hidden rounded-3xl border border-white/12 bg-neutral-900/95 shadow-2xl shadow-neutral-950/50 backdrop-blur-xl sm:mx-8"
 			>
-				Quote
-			</a>
-		</nav>
+				<nav
+					class="flex flex-col p-2 text-base font-medium"
+					aria-label="Navegación móvil"
+				>
+					{
+						navItems.map((item, index) => (
+							<a
+								class="menu-item group flex items-center justify-between gap-4 rounded-2xl px-4 py-3.5 text-white/85 transition-[background-color,color] duration-300 ease-out hover:bg-white/8 hover:text-primary-200 focus-visible:bg-white/8 focus-visible:text-primary-200 focus-visible:outline-none motion-reduce:transition-none"
+								style={`--item-delay: ${60 + index * 45}ms;`}
+								href={item.href}
+							>
+								<span class="flex items-center gap-3">
+									<span
+										aria-hidden="true"
+										class="h-4 w-px shrink-0 bg-primary-500/60 transition-[height,background-color] duration-300 ease-out group-hover:h-6 group-hover:bg-primary-300"
+									/>
+									{item.label}
+								</span>
+								<svg
+									viewBox="0 0 20 20"
+									class="size-4 shrink-0 fill-none opacity-0 transition-[opacity,transform] duration-300 ease-out group-hover:translate-x-1 group-hover:opacity-100 motion-reduce:transition-none"
+									stroke="currentColor"
+									stroke-width="1.8"
+									aria-hidden="true"
+								>
+									<path d="M4 10h12M11 5l5 5-5 5" />
+								</svg>
+							</a>
+						))
+					}
+
+					<a
+						href="#contacto"
+						class="menu-item mt-2 inline-flex min-h-12 items-center justify-center gap-3 border border-white px-4 text-sm font-bold text-white/90 transition-[background-color,border-color,color] duration-300 ease-out hover:border-primary-500 hover:bg-primary-hover hover:text-primary-200 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-200 motion-reduce:transition-none"
+						style={`--item-delay: ${60 + navItems.length * 45}ms;`}
+					>
+						Quote
+						<svg
+							viewBox="0 0 20 20"
+							class="size-4 fill-none"
+							stroke="currentColor"
+							stroke-width="1.8"
+							aria-hidden="true"
+						>
+							<path d="M4 10h12M11 5l5 5-5 5"></path>
+						</svg>
+					</a>
+				</nav>
+			</div>
+		</div>
 	</div>
+
+	{/* Velo que oscurece la página mientras el menú está abierto. */}
+	<div data-menu-overlay class="menu-overlay"></div>
 </header>
 
 <script>
@@ -118,6 +149,7 @@ const navItems = [
 		document.querySelector<HTMLButtonElement>("[data-menu-button]");
 	const mobileMenu =
 		document.querySelector<HTMLElement>("[data-mobile-menu]");
+	const overlay = document.querySelector<HTMLElement>("[data-menu-overlay]");
 
 	let isScrolled = window.scrollY > 30;
 	let isHovering = false;
@@ -126,13 +158,24 @@ const navItems = [
 	function updateHeader() {
 		const isActive = isScrolled || isHovering || isMenuOpen;
 		header?.setAttribute("data-active", String(isActive));
+		header?.setAttribute("data-menu", isMenuOpen ? "open" : "closed");
 	}
 
-	function closeMenu() {
-		isMenuOpen = false;
-		menuButton?.setAttribute("aria-expanded", "false");
-		menuButton?.setAttribute("aria-label", "Open navigation menu");
-		mobileMenu?.classList.add("hidden");
+	// El panel cubre la pantalla, así que el fondo no debe seguir desplazándose.
+	function setScrollLock(locked: boolean) {
+		document.documentElement.style.overflow = locked ? "hidden" : "";
+	}
+
+	function setMenu(open: boolean) {
+		isMenuOpen = open;
+
+		menuButton?.setAttribute("aria-expanded", String(open));
+		menuButton?.setAttribute(
+			"aria-label",
+			open ? "Close navigation menu" : "Open navigation menu",
+		);
+		mobileMenu?.toggleAttribute("inert", !open);
+		setScrollLock(open);
 		updateHeader();
 	}
 
@@ -158,23 +201,140 @@ const navItems = [
 		updateHeader();
 	});
 
-	menuButton?.addEventListener("click", () => {
-		const isOpen = menuButton.getAttribute("aria-expanded") === "true";
-		isMenuOpen = !isOpen;
+	menuButton?.addEventListener("click", () => setMenu(!isMenuOpen));
 
-		menuButton.setAttribute("aria-expanded", String(!isOpen));
-		menuButton.setAttribute(
-			"aria-label",
-			isOpen ? "Open navigation menu" : "Close navigation menu",
-		);
-
-		mobileMenu?.classList.toggle("hidden", isOpen);
-		updateHeader();
-	});
+	overlay?.addEventListener("click", () => setMenu(false));
 
 	mobileMenu
 		?.querySelectorAll("a")
-		.forEach((link) => link.addEventListener("click", closeMenu));
+		.forEach((link) => link.addEventListener("click", () => setMenu(false)));
 
-	updateHeader();
+	document.addEventListener("keydown", (event) => {
+		if (event.key === "Escape" && isMenuOpen) {
+			setMenu(false);
+			menuButton?.focus();
+		}
+	});
+
+	// Al pasar a escritorio el panel deja de existir: cerrarlo evita quedarse
+	// con el scroll bloqueado.
+	const desktop = window.matchMedia("(min-width: 1024px)");
+	desktop.addEventListener("change", (event) => {
+		if (event.matches && isMenuOpen) setMenu(false);
+	});
+
+	setMenu(false);
 </script>
+
+<style>
+	/* --- Icono hamburguesa → aspa --- */
+	.menu-icon {
+		display: flex;
+		width: 1.25rem;
+		flex-direction: column;
+		align-items: flex-end;
+		gap: 0.375rem;
+	}
+
+	.menu-line {
+		height: 1px;
+		width: 100%;
+		background-color: currentColor;
+		transition:
+			transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+			opacity 0.2s ease,
+			width 0.35s ease;
+	}
+
+	.menu-line:last-child {
+		width: 60%;
+	}
+
+	[data-menu="open"] .menu-line:first-child {
+		transform: translateY(0.4375rem) rotate(45deg);
+	}
+
+	[data-menu="open"] .menu-line:nth-child(2) {
+		opacity: 0;
+		transform: scaleX(0.4);
+	}
+
+	[data-menu="open"] .menu-line:last-child {
+		width: 100%;
+		transform: translateY(-0.4375rem) rotate(-45deg);
+	}
+
+	/* --- Panel desplegable --- */
+	.mobile-menu {
+		display: grid;
+		grid-template-rows: 0fr;
+		transition: grid-template-rows 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+	}
+
+	.mobile-menu-clip {
+		overflow: hidden;
+		min-height: 0;
+	}
+
+	[data-menu="open"] .mobile-menu {
+		grid-template-rows: 1fr;
+	}
+
+	/* Cada enlace entra escalonado una vez que el panel abre. */
+	.menu-item {
+		opacity: 0;
+		transform: translateY(-0.5rem);
+		transition:
+			opacity 0.35s ease-out,
+			transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+			background-color 0.3s ease,
+			border-color 0.3s ease,
+			color 0.3s ease;
+	}
+
+	[data-menu="open"] .menu-item {
+		opacity: 1;
+		transform: none;
+		transition-delay: var(--item-delay, 0ms);
+	}
+
+	/* --- Velo de fondo --- */
+	.menu-overlay {
+		position: fixed;
+		inset: 0;
+		z-index: -10;
+		background-color: rgba(12, 9, 10, 0.6);
+		backdrop-filter: blur(2px);
+		opacity: 0;
+		pointer-events: none;
+		transition: opacity 0.4s ease;
+	}
+
+	[data-menu="open"] .menu-overlay {
+		opacity: 1;
+		pointer-events: auto;
+	}
+
+	/* En escritorio manda la navegación inline; el panel y el velo no existen.
+	   Se ocultan aquí (y no con `lg:hidden`) porque las reglas de este bloque
+	   tienen más especificidad que las utilidades de Tailwind. */
+	@media (min-width: 1024px) {
+		.mobile-menu,
+		.menu-overlay {
+			display: none;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.menu-line,
+		.mobile-menu,
+		.menu-item,
+		.menu-overlay {
+			transition: none;
+		}
+
+		[data-menu="open"] .menu-item {
+			transition-delay: 0ms;
+		}
+	}
+</style>
