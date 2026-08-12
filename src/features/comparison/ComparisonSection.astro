@@ -1,0 +1,121 @@
+---
+import BeforeAfterSlider from "./BeforeAfterSlider.astro";
+import { afterImage, beforeImage } from "./comparison";
+---
+
+<section id="transformacion" class="relative bg-neutral-950 text-white">
+	{/* Halo rojo tenue detrás del comparador: separa esta sección de la parrilla
+	    de paneles sin romper el fondo oscuro continuo de la página. */}
+	<div
+		class="pointer-events-none absolute inset-x-0 z-0 h-1/2 bg-[radial-gradient(ellipse_at_center,color-mix(in_srgb,var(--color-primary-800)_45%,transparent),transparent_70%)]"
+		aria-hidden="true"
+	>
+	</div>
+
+	<div
+		class="relative mx-auto max-w-7xl py-20 sm:px-8 lg:px-10 lg:py-8"
+	>
+		<div class="mx-auto max-w-3xl text-center">
+			<p
+				data-animate
+				style="--reveal-delay: 0ms;"
+				class="text-xs font-semibold uppercase tracking-[0.28em] text-primary-300 sm:text-sm"
+			>
+				Before / After
+			</p>
+			<h2
+				data-animate
+				style="--reveal-delay: 90ms;"
+				class="mt-4 text-3xl font-semibold tracking-tight sm:text-4xl"
+			>
+				The same room, without the moisture
+			</h2>
+			<p
+				data-animate
+				style="--reveal-delay: 180ms;"
+				class="mt-4 text-base leading-7 text-white/70"
+			>
+				Drag the handle to reveal how a stained, moisture-damaged
+				ceiling turns into a clean Dryza surface — same space, same
+				light, a completely different impression.
+			</p>
+		</div>
+
+		<div data-animate style="--reveal-delay: 270ms;" class="mt-12">
+			<BeforeAfterSlider
+				before={beforeImage}
+				after={afterImage}
+				beforeAlt="Roof of a restaurant with moisture stains and mold"
+				afterAlt="Same restaurant with Dryza decorative paneling"
+				beforeLabel="Before"
+				afterLabel="After"
+				label="Slide to compare the ceiling before and after Dryza"
+				class="mx-auto max-w-5xl"
+			/>
+
+			<p
+				class="mx-auto mt-6 max-w-5xl text-center text-sm text-white/50"
+			>
+				Drag the handle — or focus it and use the arrow keys — to
+				compare both ceilings.
+			</p>
+		</div>
+	</div>
+</section>
+
+<script>
+	import "../../shared/ui/revealOnScroll";
+</script>
+
+<style>
+	@keyframes reveal-comparison {
+		from {
+			opacity: 0;
+			transform: translateY(2rem);
+		}
+		to {
+			opacity: 1;
+			transform: none;
+		}
+	}
+
+	/* Fallback (sin animaciones ligadas al scroll): el IntersectionObserver
+	   añade `.is-visible` y dispara la entrada escalonada. */
+	[data-animate] {
+		opacity: 0;
+		transform: translateY(2rem);
+		transition:
+			opacity 0.7s ease-out,
+			transform 0.7s ease-out;
+		transition-delay: var(--reveal-delay, 0ms);
+		will-change: opacity, transform;
+	}
+
+	[data-animate].is-visible {
+		opacity: 1;
+		transform: none;
+	}
+
+	/* Navegadores modernos: la entrada se sincroniza con el scroll. A diferencia
+	   de las tarjetas de paneles, aquí el movimiento es vertical y corto — un
+	   marco de esta superficie deslizándose de lado distraería del contenido. */
+	@supports (animation-timeline: view()) {
+		[data-animate] {
+			opacity: 1;
+			transform: none;
+			transition: none;
+			animation: reveal-comparison linear both;
+			animation-timeline: view();
+			animation-range: entry 10% cover 30%;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		[data-animate] {
+			opacity: 1;
+			transform: none;
+			transition: none;
+			animation: none;
+		}
+	}
+</style>
