@@ -33,7 +33,7 @@ function firstImage(
 
 // Esto exporta las imagenes de antes y después para que puedan ser usadas en otros archivos, como en el componente de comparación.
 //
-// Peeeeeeero debe aclararse que si no hay imágenes en las carpetas, estas variables serán undefined. 
+// Peeeeeeero debe aclararse que si no hay imágenes en las carpetas, estas variables serán undefined, en ese caso se usará la imagen por defecto. 
 // Por lo tanto, es importante asegurarse de que siempre haya al menos una imagen.
 //
 // Además también es importante saber que las imagenes que serán comparadas son las primeras en orden alfabético de sus respectivas carpetas, por lo que si se agregan más imágenes, 
