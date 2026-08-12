@@ -1,0 +1,289 @@
+---
+import type { ImageMetadata } from "astro";
+import PanelImage from "../../shared/ui/PanelImage.astro";
+
+interface Props {
+	before?: ImageMetadata;
+	after?: ImageMetadata;
+	beforeAlt: string;
+	afterAlt: string;
+	beforeLabel?: string;
+	afterLabel?: string;
+	/** Etiqueta accesible del control deslizante. */
+	label?: string;
+	class?: string;
+}
+
+const {
+	before,
+	after,
+	beforeAlt,
+	afterAlt,
+	beforeLabel = "Before",
+	afterLabel = "After",
+	label = "Slide to compare the ceiling before and after Dryza",
+	class: className = "",
+} = Astro.props;
+---
+
+{/* El barrido se controla con una sola variable, `--pos`: recorta la capa
+    "antes" y coloca la manija. El <input type="range"> invisible que cubre el
+    marco es el único origen de verdad — arrastre con ratón, gesto táctil y
+    teclado (flechas) salen gratis y con semántica correcta para lectores de
+    pantalla. */}
+<figure
+	class={`compare group relative ${className}`}
+	style="--pos: 50%;"
+	data-compare
+	data-touched="false"	
+>
+	<div
+		class="relative aspect-3/2 overflow-hidden rounded-4xl border border-white/10 bg-neutral-900 shadow-2xl shadow-neutral-950/60"
+	>
+		<input
+			type="range"
+			min="0"
+			max="100"
+			step="0.1"
+			value="50"
+			class="compare-range"
+			aria-label={label}
+			aria-valuetext="50% original ceiling"
+			data-compare-range
+		/>
+
+		{/* Capa base: el resultado con Dryza, siempre completa. */}
+		<PanelImage
+			src={after}
+			alt={afterAlt}
+			fit="cover"
+			class="absolute inset-0 z-0"
+		/>
+
+		<span
+			class="pointer-events-none absolute right-4 top-4 rounded-full border border-white/20 bg-neutral-950/55 px-3.5 py-1.5 text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-white backdrop-blur-sm sm:right-6 sm:top-6 sm:text-xs"
+		>
+			{afterLabel}
+		</span>
+
+		{/* Capa recortada: el estado original. `clip-path` no altera el flujo, así
+		    que la foto conserva el tamaño del marco y ambas casan píxel a píxel. */}
+		<div class="compare-clip absolute inset-0 z-10">
+			<PanelImage
+				src={before}
+				alt={beforeAlt}
+				fit="cover"
+				class="absolute inset-0"
+			/>
+
+			<span
+				class="pointer-events-none absolute left-4 top-4 rounded-full border border-white/20 bg-neutral-950/55 px-3.5 py-1.5 text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-white backdrop-blur-sm sm:left-6 sm:top-6 sm:text-xs"
+			>
+				{beforeLabel}
+			</span>
+		</div>
+
+		<div class="compare-divider" aria-hidden="true">
+			<span class="compare-line"></span>
+
+			<span class="compare-handle">
+				<span class="compare-pulse"></span>
+
+				<svg
+					viewBox="0 0 24 24"
+					class="relative size-5 fill-none sm:size-6"
+					stroke="currentColor"
+					stroke-width="2"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+				>
+					<path d="M9.5 7.5 5 12l4.5 4.5M14.5 7.5 19 12l-4.5 4.5"></path>
+				</svg>
+			</span>
+		</div>
+	</div>
+</figure>
+
+<script>
+	document.querySelectorAll<HTMLElement>("[data-compare]").forEach((root) => {
+
+		const range = root.querySelector<HTMLInputElement>(
+			"[data-compare-range]", //Busca el slider de rango dentro del contenedor raíz
+		);
+
+		if (!range) return;
+
+		const update = () => {
+			const value = Number(range.value);
+
+			root.style.setProperty("--pos", `${value}%`);
+			// El valor por defecto que anuncia un range ("50") no dice nada aquí;
+			// se reemplaza por cuánta superficie original queda a la vista.
+			range.setAttribute(
+				"aria-valuetext",
+				`${Math.round(value)}% original ceiling`,
+			);
+		};
+
+		// La animación que invita a arrastrar sólo tiene sentido hasta el primer uso.
+		const markTouched = () => {
+			root.dataset.touched = "true";
+		};
+
+		range.addEventListener("input", update);
+		range.addEventListener("pointerdown", markTouched, { once: true });
+		range.addEventListener("keydown", markTouched, { once: true });
+
+		update();
+	});
+</script>
+
+<style>
+	/* El control real: cubre todo el marco, es invisible y queda por encima de
+	   las capas. `touch-action: pan-y` es lo que permite seguir deslizando la
+	   página en vertical sobre la foto en móvil, reservando sólo el gesto
+	   horizontal para el comparador. */
+	.compare-range {
+		position: absolute;
+		inset: 0;
+		z-index: 30;
+		width: 100%;
+		height: 100%;
+		margin: 0;
+		padding: 0;
+		appearance: none;
+		-webkit-appearance: none;
+		background: transparent;
+		opacity: 0;
+		cursor: ew-resize;
+		touch-action: pan-y;
+	}
+
+	/* Pulgar de 2px: el valor del range coincide con la posición real del cursor
+	   (un pulgar ancho desplazaría el mapeo cerca de los extremos). */
+	.compare-range::-webkit-slider-runnable-track {
+		height: 100%;
+		background: transparent;
+	}
+
+	.compare-range::-webkit-slider-thumb {
+		-webkit-appearance: none;
+		width: 2px;
+		height: 100%;
+		background: transparent;
+	}
+
+	.compare-range::-moz-range-track {
+		height: 100%;
+		background: transparent;
+	}
+
+	.compare-range::-moz-range-thumb {
+		width: 2px;
+		height: 100%;
+		border: 0;
+		border-radius: 0;
+		background: transparent;
+	}
+
+	.compare-clip {
+		clip-path: inset(0 calc(100% - var(--pos)) 0 0);
+	}
+
+	.compare-divider {
+		position: absolute;
+		inset-block: 0;
+		left: var(--pos);
+		z-index: 20;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		transform: translateX(-50%);
+		pointer-events: none;
+	}
+
+	.compare-line {
+		position: absolute;
+		inset-block: 0;
+		width: 2px;
+		background: rgba(255, 255, 255, 0.9);
+		box-shadow: 0 0 18px rgba(12, 9, 10, 0.55);
+	}
+
+	.compare-handle {
+		position: relative;
+		display: grid;
+		place-items: center;
+		width: 1rem;
+		height: 1rem;
+		border-radius: 9999px;
+		background: var(--color-cta);
+		color: var(--color-cta-text);
+		box-shadow:
+			0 0 0 3px rgba(255, 255, 255, 0.9),
+			0 14px 30px -8px rgba(12, 9, 10, 0.75);
+		transition:
+			transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+			background-color 0.3s ease;
+	}
+
+	@media (min-width: 640px) {
+		.compare-handle {
+			width: 3.5rem;
+			height: 3.5rem;
+		}
+	}
+
+	.compare:hover .compare-handle {
+		transform: scale(1.08);
+		background: var(--color-cta-hover);
+	}
+
+	/* El foco vive en el <input> invisible, así que el anillo se dibuja sobre la
+	   manija (hermano posterior del control). */
+	.compare-range:focus-visible ~ .compare-divider .compare-handle {
+		outline: 2px solid var(--color-primary-200);
+		outline-offset: 6px;
+	}
+
+	/* Aro que late hasta que el usuario toca el comparador por primera vez. */
+	.compare-pulse {
+		position: absolute;
+		inset: 0;
+		border-radius: 9999px;
+		border: 2px solid var(--color-cta);
+		animation: compare-pulse 2s ease-out infinite;
+	}
+
+	.compare[data-touched="true"] .compare-pulse {
+		animation: none;
+		opacity: 0;
+	}
+
+	@keyframes compare-pulse {
+		0% {
+			opacity: 0.7;
+			transform: scale(1);
+		}
+		70%,
+		100% {
+			opacity: 0;
+			transform: scale(1.85);
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.compare-handle {
+			transition: none;
+		}
+
+		.compare:hover .compare-handle {
+			transform: none;
+		}
+
+		.compare-pulse {
+			animation: none;
+			opacity: 0;
+		}
+	}
+</style>

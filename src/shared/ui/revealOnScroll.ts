@@ -1,9 +1,12 @@
 // Staggered "reveal on scroll" for `[data-animate]` elements.
 //
 // Modern browsers do this entirely in CSS via `animation-timeline: view()`
-// (see the section's <style> block), so here we only handle the fallbacks:
+// (see each section's <style> block), so here we only handle the fallbacks:
 //   - IntersectionObserver plays a one-shot fade as each element enters view.
 //   - Oldest browsers just show everything.
+//
+// Compartido: cualquier sección puede marcar elementos con `data-animate` e
+// importar este módulo; el navegador lo evalúa una sola vez por página.
 
 const prefersReducedMotion = window.matchMedia(
 	"(prefers-reduced-motion: reduce)",
