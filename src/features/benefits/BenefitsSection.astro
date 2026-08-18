@@ -1,0 +1,301 @@
+---
+import Icon from "../../shared/ui/Icon.astro";
+import { benefits, featuredBenefit } from "./benefits";
+---
+
+<section id="beneficios" class="relative bg-neutral-950 text-white">
+	{/* Halo rojo tenue en la parte inferior: cierra la página con el mismo
+	    lenguaje que el comparador, sin romper el fondo oscuro continuo. */}
+	<div
+		class="pointer-events-none absolute inset-x-0 bottom-0 z-0 h-1/2 bg-[radial-gradient(ellipse_at_center,color-mix(in_srgb,var(--color-primary-800)_45%,transparent),transparent_70%)]"
+		aria-hidden="true"
+	>
+	</div>
+
+	<div class="relative mx-auto max-w-7xl px-5 py-20 sm:px-8 lg:px-10 lg:py-28">
+		<div class="mx-auto max-w-3xl text-center">
+			<p
+				data-animate
+				style="--reveal-delay: 0ms;"
+				class="text-xs font-semibold uppercase tracking-[0.28em] text-primary-300 sm:text-sm"
+			>
+				Why Dryza
+			</p>
+			<h2
+				data-animate
+				style="--reveal-delay: 90ms;"
+				class="mt-4 text-3xl font-semibold tracking-tight sm:text-4xl"
+			>
+				Benefits of Anti-Moisture Panels
+			</h2>
+			<p
+				data-animate
+				style="--reveal-delay: 180ms;"
+				class="mt-4 text-base leading-7 text-white/70"
+			>
+				More than a cover-up: Dryza panels solve the moisture problem
+				and upgrade the room in a single, hassle-free step.
+			</p>
+		</div>
+
+		{/* Tarjeta destacada: el plazo de instalación es el argumento
+		    principal, por eso ocupa todo el ancho con la cifra grande. */}
+		<div
+			data-animate
+			style="--reveal-delay: 270ms;"
+			class="mt-12 overflow-hidden rounded-3xl border border-white/10 bg-white/5 backdrop-blur-sm"
+		>
+			<div
+				class="flex flex-col items-center gap-8 px-8 py-10 sm:px-12 lg:flex-row lg:gap-14 lg:py-14"
+			>
+				<div class="flex items-center gap-6 lg:shrink-0">
+					<div
+						class="flex h-16 w-16 items-center justify-center rounded-2xl bg-primary-600/20 text-primary-300"
+					>
+						<Icon name={featuredBenefit.icon} class="h-8 w-8" />
+					</div>
+					<p
+						class="text-5xl font-semibold tracking-tight text-primary-300 sm:text-6xl"
+					>
+						{featuredBenefit.stat}
+					</p>
+				</div>
+
+				<div class="text-center lg:text-left">
+					<h3 class="text-xl font-semibold sm:text-2xl">
+						{featuredBenefit.title}
+					</h3>
+					<p class="mt-3 max-w-xl leading-7 text-white/70">
+						{featuredBenefit.description}
+					</p>
+					<ul
+						class="mt-5 flex flex-wrap justify-center gap-2 lg:justify-start"
+					>
+						{
+							featuredBenefit.points.map((point) => (
+								<li class="flex items-center gap-1.5 px-3 py-1 text-xs font-bold text-white">
+									<Icon
+										name="check"
+										class="h-3.5 w-3.5 text-primary-300"
+									/>
+									{point}
+								</li>
+							))
+						}
+					</ul>
+				</div>
+			</div>
+		</div>
+
+		{/* Callouts alternados: círculo con el ícono y una línea fina que
+		    conecta con el texto, invirtiendo el lado en cada fila. En móvil
+		    se apilan centrados y la línea desaparece.
+		    `--reveal-direction` y `--reveal-origin` orientan el despliegue:
+		    la fila se revela desde el lado del círculo hacia el texto. */}
+		<ul class="mx-auto mt-16 flex max-w-5xl flex-col gap-12 lg:mt-20 lg:gap-16">
+			{
+				benefits.map((benefit, index) => {
+					const reversed = index % 2 === 1;
+					return (
+						<li
+							data-animate
+							style={`--reveal-delay: ${(index + 3) * 90}ms; --reveal-direction: ${reversed ? -1 : 1}; --reveal-origin: ${reversed ? "right" : "left"};`}
+							class={`benefit-row group flex flex-col items-center gap-5 text-center lg:flex-row lg:gap-10 lg:text-left ${reversed ? "lg:flex-row-reverse" : ""}`}
+						>
+							<div class="benefit-circle flex h-24 w-24 shrink-0 items-center justify-center rounded-full border border-white/25 text-primary-300 transition-colors duration-300 lg:h-28 lg:w-28">
+								<Icon name={benefit.icon} class="h-9 w-9" />
+							</div>
+
+							<div
+								class="benefit-line hidden h-px flex-1 bg-white/20 lg:block"
+								aria-hidden="true"
+							>
+							</div>
+
+							<div
+								class={`benefit-text max-w-md ${reversed ? "lg:text-right" : ""}`}
+							>
+								<h3 class="text-lg font-semibold tracking-tight sm:text-xl">
+									{benefit.title}
+								</h3>
+								<p class="mt-2 text-sm leading-6 text-white/60">
+									{benefit.description}
+								</p>
+							</div>
+						</li>
+					);
+				})
+			}
+		</ul>
+	</div>
+</section>
+
+<script>
+	import "../../shared/ui/revealOnScroll";
+</script>
+
+<style>
+	@keyframes reveal-benefits {
+		from {
+			opacity: 0;
+			transform: translateY(2rem);
+		}
+		to {
+			opacity: 1;
+			transform: none;
+		}
+	}
+
+	/* Despliegue por partes de cada callout: el círculo aparece, la línea
+	   crece desde su lado y el texto entra deslizándose en la misma
+	   dirección. `--reveal-direction` (1 | -1) fija el sentido y
+	   `--reveal-origin` (left | right) el extremo desde el que crece la
+	   línea, así filas normales e invertidas comparten los mismos keyframes. */
+	@keyframes benefit-circle-in {
+		from {
+			opacity: 0;
+			transform: scale(0.6);
+		}
+		to {
+			opacity: 1;
+			transform: none;
+		}
+	}
+
+	@keyframes benefit-line-in {
+		from {
+			transform: scaleX(0);
+		}
+		to {
+			transform: none;
+		}
+	}
+
+	@keyframes benefit-text-in {
+		from {
+			opacity: 0;
+			transform: translateX(calc(var(--reveal-direction, 1) * -2rem));
+		}
+		to {
+			opacity: 1;
+			transform: none;
+		}
+	}
+
+	/* Fallback (sin animaciones ligadas al scroll): el IntersectionObserver
+	   añade `.is-visible` y dispara la entrada escalonada. */
+	[data-animate] {
+		opacity: 0;
+		transform: translateY(2rem);
+		transition:
+			opacity 0.7s ease-out,
+			transform 0.7s ease-out;
+		transition-delay: var(--reveal-delay, 0ms);
+		will-change: opacity, transform;
+	}
+
+	[data-animate].is-visible {
+		opacity: 1;
+		transform: none;
+	}
+
+	/* La fila en sí no se mueve: solo actúa de gancho para el observer.
+	   Quien se anima es cada parte, con su propio retardo dentro de la fila. */
+	[data-animate].benefit-row {
+		opacity: 1;
+		transform: none;
+		transition: none;
+		will-change: auto;
+	}
+
+	.benefit-circle,
+	.benefit-text {
+		opacity: 0;
+		transition:
+			opacity 0.5s ease-out,
+			transform 0.5s ease-out;
+	}
+
+	.benefit-circle {
+		transform: scale(0.6);
+		transition-delay: var(--reveal-delay, 0ms);
+	}
+
+	.benefit-line {
+		transform: scaleX(0);
+		transform-origin: var(--reveal-origin, left);
+		transition: transform 0.5s ease-out;
+		transition-delay: calc(var(--reveal-delay, 0ms) + 150ms);
+	}
+
+	.benefit-text {
+		transform: translateX(calc(var(--reveal-direction, 1) * -2rem));
+		transition-delay: calc(var(--reveal-delay, 0ms) + 300ms);
+	}
+
+	.benefit-row.is-visible .benefit-circle,
+	.benefit-row.is-visible .benefit-line,
+	.benefit-row.is-visible .benefit-text {
+		opacity: 1;
+		transform: none;
+	}
+
+	/* Navegadores modernos: el despliegue se sincroniza con el scroll. Cada
+	   parte usa un tramo distinto del `animation-range` para que entren en
+	   secuencia (círculo → línea → texto) a medida que la fila sube por el
+	   viewport. */
+	@supports (animation-timeline: view()) {
+		[data-animate] {
+			opacity: 1;
+			transform: none;
+			transition: none;
+			animation: reveal-benefits linear both;
+			animation-timeline: view();
+			animation-range: entry 10% cover 30%;
+		}
+
+		[data-animate].benefit-row {
+			animation: none;
+		}
+
+		.benefit-circle,
+		.benefit-line,
+		.benefit-text {
+			opacity: 1;
+			transform: none;
+			transition: none;
+			animation-timeline: view();
+		}
+
+		.benefit-circle {
+			animation: benefit-circle-in linear both;
+			animation-timeline: view();
+			animation-range: entry 5% cover 25%;
+		}
+
+		.benefit-line {
+			animation: benefit-line-in linear both;
+			animation-timeline: view();
+			animation-range: entry 10% cover 30%;
+			transform-origin: var(--reveal-origin, left);
+		}
+
+		.benefit-text {
+			animation: benefit-text-in linear both;
+			animation-timeline: view();
+			animation-range: entry 15% cover 35%;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		[data-animate],
+		.benefit-circle,
+		.benefit-line,
+		.benefit-text {
+			opacity: 1;
+			transform: none;
+			transition: none;
+			animation: none;
+		}
+	}
+</style>
