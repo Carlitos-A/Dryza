@@ -1,4 +1,5 @@
 ---
+import Icon from "../../shared/ui/Icon.astro";
 import PanelImage from "../../shared/ui/PanelImage.astro";
 import { getPanelImage, type PanelDesign } from "./designs";
 
@@ -46,15 +47,7 @@ const href = `/disenos/${design.slug}`;
 			class="panel-cta mt-auto inline-flex w-fit items-center gap-2 pt-2 text-xs font-semibold uppercase tracking-[0.2em] text-white/60 transition-colors duration-300 group-hover:text-primary-200"
 		>
 			See details
-			<svg
-				viewBox="0 0 20 20"
-				class="panel-arrow size-3.5 fill-none"
-				stroke="currentColor"
-				stroke-width="1.8"
-				aria-hidden="true"
-			>
-				<path d="M4 10h12M11 5l5 5-5 5" />
-			</svg>
+			<Icon name="arrow-right" class="panel-arrow size-3.5" />
 		</span>
 	</div>
 </a>
@@ -127,20 +120,21 @@ const href = `/disenos/${design.slug}`;
 		background-position: -50% 0;
 	}
 
-	/* La flecha del CTA avanza junto con el hover. */
-	.panel-arrow {
+	/* La flecha del CTA avanza junto con el hover. `:global` porque el SVG
+	   se inyecta vía `set:html` desde <Icon /> y no recibe el scope de Astro. */
+	.panel-card :global(.panel-arrow) {
 		transition: transform 0.4s var(--ease-out-back);
 	}
 
-	.panel-card:hover .panel-arrow,
-	.panel-card:focus-visible .panel-arrow {
+	.panel-card:hover :global(.panel-arrow),
+	.panel-card:focus-visible :global(.panel-arrow) {
 		transform: translateX(0.35rem);
 	}
 
 	@media (prefers-reduced-motion: reduce) {
 		.panel-card,
 		.panel-glow,
-		.panel-arrow,
+		.panel-card :global(.panel-arrow),
 		.panel-card :global(.panel-art) {
 			transition: none;
 		}

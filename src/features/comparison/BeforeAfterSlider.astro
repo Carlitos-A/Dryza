@@ -1,5 +1,6 @@
 ---
 import type { ImageMetadata } from "astro";
+import Icon from "../../shared/ui/Icon.astro";
 import PanelImage from "../../shared/ui/PanelImage.astro";
 
 interface Props {
@@ -89,16 +90,10 @@ const {
 			<span class="compare-handle">
 				<span class="compare-pulse"></span>
 
-				<svg
-					viewBox="0 0 24 24"
-					class="relative size-5 fill-none sm:size-6"
-					stroke="currentColor"
-					stroke-width="2"
-					stroke-linecap="round"
-					stroke-linejoin="round"
-				>
-					<path d="M9.5 7.5 5 12l4.5 4.5M14.5 7.5 19 12l-4.5 4.5"></path>
-				</svg>
+				<Icon
+					name="chevrons-horizontal"
+					class="relative size-5 sm:size-6"
+				/>
 			</span>
 		</div>
 	</div>
