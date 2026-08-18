@@ -1,5 +1,6 @@
 ---
 import type { ImageMetadata } from "astro";
+import Icon from "../../shared/ui/Icon.astro";
 import PanelImage from "../../shared/ui/PanelImage.astro";
 
 interface Props {
@@ -28,9 +29,10 @@ const {
 
 {/* El barrido se controla con una sola variable, `--pos`: recorta la capa
     "antes" y coloca la manija. El <input type="range"> invisible que cubre el
-    marco es el único origen de verdad — arrastre con ratón, gesto táctil y
-    teclado (flechas) salen gratis y con semántica correcta para lectores de
-    pantalla. */}
+    marco es el origen de verdad (valor, teclado y semántica para lectores de
+    pantalla), pero el arrastre se maneja con pointer events en el <script>:
+    en móvil el range nativo sólo responde si el gesto empieza sobre el pulgar
+    de 2px, así que toda la superficie se hace arrastrable a mano. */}
 <figure
 	class={`compare group relative ${className}`}
 	style="--pos: 50%;"
@@ -89,16 +91,10 @@ const {
 			<span class="compare-handle">
 				<span class="compare-pulse"></span>
 
-				<svg
-					viewBox="0 0 24 24"
-					class="relative size-5 fill-none sm:size-6"
-					stroke="currentColor"
-					stroke-width="2"
-					stroke-linecap="round"
-					stroke-linejoin="round"
-				>
-					<path d="M9.5 7.5 5 12l4.5 4.5M14.5 7.5 19 12l-4.5 4.5"></path>
-				</svg>
+				<Icon
+					name="chevrons-horizontal"
+					class="relative size-6"
+				/>
 			</span>
 		</div>
 	</div>
@@ -130,8 +126,40 @@ const {
 			root.dataset.touched = "true";
 		};
 
+		// En móvil los navegadores sólo mueven un <input type="range"> nativo si
+		// el arrastre empieza justo sobre el pulgar (aquí, de 2px). Para que todo
+		// el marco responda al dedo, el arrastre se gobierna con pointer events y
+		// el range queda como origen de verdad (teclado y lector de pantalla).
+		// `touch-action: pan-y` sigue reservando el scroll vertical de la página:
+		// si el gesto es vertical, el navegador cancela el puntero y soltamos.
+		const updateFromClientX = (clientX: number) => {
+			const rect = range.getBoundingClientRect();
+			const value = ((clientX - rect.left) / rect.width) * 100;
+
+			range.value = String(Math.min(100, Math.max(0, value)));
+			update();
+		};
+
+		let dragging = false;
+
+		range.addEventListener("pointerdown", (event) => {
+			dragging = true;
+			markTouched();
+			range.setPointerCapture(event.pointerId);
+			updateFromClientX(event.clientX);
+		});
+
+		range.addEventListener("pointermove", (event) => {
+			if (dragging) updateFromClientX(event.clientX);
+		});
+
+		const stopDragging = () => {
+			dragging = false;
+		};
+
 		range.addEventListener("input", update);
-		range.addEventListener("pointerdown", markTouched, { once: true });
+		range.addEventListener("pointerup", stopDragging);
+		range.addEventListener("pointercancel", stopDragging);
 		range.addEventListener("keydown", markTouched, { once: true });
 
 		update();
@@ -214,8 +242,8 @@ const {
 		position: relative;
 		display: grid;
 		place-items: center;
-		width: 1rem;
-		height: 1rem;
+		width: 2.75rem;
+		height: 2.75rem;
 		border-radius: 9999px;
 		background: var(--color-cta);
 		color: var(--color-cta-text);

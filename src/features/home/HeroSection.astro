@@ -2,19 +2,20 @@
 import heroPool from "../../assets/images/hero-pool.png";
 import heroRestaurant from "../../assets/images/hero-terrace.png";
 import escala from "../../assets/images/test1.jpg";
+import Icon from "../../shared/ui/Icon.astro";
 
 const slides = [
 	{
 		src: escala,
-		alt: "Escala de imagenes que iran en el hero",
+		alt: "Image placeholder scale test for the hero carousel",
 	},
 	{
 		src: heroPool,
-		alt: "Piscina interior con cielos y muros resistentes a la humedad",
+		alt: "Indoor pool with moisture-resistant walls and ceiling",
 	},
 	{
 		src: heroRestaurant,
-		alt: "Restaurante contemporáneo con cielo modular y revestimiento decorativo",
+		alt: "Contemporary restaurant with modular ceiling and decorative paneling",
 	},
 ];
 ---
@@ -91,14 +92,7 @@ const slides = [
 					class="grid size-9 place-items-center rounded-full bg-white/15 transition-transform duration-300 group-hover:translate-x-0.5"
 					aria-hidden="true"
 				>
-					<svg
-						viewBox="0 0 20 20"
-						class="size-5 fill-none"
-						stroke="currentColor"
-						stroke-width="1.8"
-					>
-						<path d="M4 10h12M11 5l5 5-5 5"></path>
-					</svg>
+					<Icon name="arrow-right" class="size-5" />
 				</span>
 			</a>
 		</div>

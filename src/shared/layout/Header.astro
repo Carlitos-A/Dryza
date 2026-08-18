@@ -1,4 +1,6 @@
 ---
+import Icon from "../ui/Icon.astro";
+
 const navItems = [
 	{ href: "#paneles", label: "Panels" },
 	{ href: "#revestimientos", label: "Finishes" },
@@ -50,15 +52,7 @@ const navItems = [
 				class="inline-flex min-h-11 items-center gap-3 border border-white bg-primary/0 px-4 text-sm font-bold text-white/90 shadow-sm transition-[background-color,border-color,box-shadow] hover:text-primary-200 duration-300 ease-out hover:border-primary-500 hover:bg-primary-hover hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-200 motion-reduce:delay-0 motion-reduce:transition-none"
 			>
 				Quote
-				<svg
-					viewBox="0 0 20 20"
-					class="size-4 fill-none"
-					stroke="currentColor"
-					stroke-width="1.8"
-					aria-hidden="true"
-				>
-					<path d="M4 10h12M11 5l5 5-5 5"></path>
-				</svg>
+				<Icon name="arrow-right" class="size-4" />
 			</a>
 		</div>
 
@@ -89,7 +83,7 @@ const navItems = [
 			>
 				<nav
 					class="flex flex-col p-2 text-base font-medium"
-					aria-label="Navegación móvil"
+					aria-label="Mobile navigation"
 				>
 					{
 						navItems.map((item, index) => (
@@ -105,15 +99,10 @@ const navItems = [
 									/>
 									{item.label}
 								</span>
-								<svg
-									viewBox="0 0 20 20"
-									class="size-4 shrink-0 fill-none opacity-0 transition-[opacity,transform] duration-300 ease-out group-hover:translate-x-1 group-hover:opacity-100 motion-reduce:transition-none"
-									stroke="currentColor"
-									stroke-width="1.8"
-									aria-hidden="true"
-								>
-									<path d="M4 10h12M11 5l5 5-5 5" />
-								</svg>
+								<Icon
+									name="arrow-right"
+									class="size-4 shrink-0 opacity-0 transition-[opacity,transform] duration-300 ease-out group-hover:translate-x-1 group-hover:opacity-100 motion-reduce:transition-none"
+								/>
 							</a>
 						))
 					}
@@ -124,15 +113,7 @@ const navItems = [
 						style={`--item-delay: ${60 + navItems.length * 45}ms;`}
 					>
 						Quote
-						<svg
-							viewBox="0 0 20 20"
-							class="size-4 fill-none"
-							stroke="currentColor"
-							stroke-width="1.8"
-							aria-hidden="true"
-						>
-							<path d="M4 10h12M11 5l5 5-5 5"></path>
-						</svg>
+						<Icon name="arrow-right" class="size-4" />
 					</a>
 				</nav>
 			</div>
