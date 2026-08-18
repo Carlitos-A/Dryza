@@ -9,9 +9,29 @@ interface Props {
 }
 
 const {
-	title = "Dryza | Moisture-resistant ceiling systems",
-	description = "Moisture-resistant ceiling systems for architectural applications.",
+	title = "Dryza | Anti-Moisture Ceiling & Wall Panels",
+	description = "Dryza decorative anti-moisture panels eliminate wall and ceiling humidity, prevent stains and odors, and install in under 24 hours with no demolition. Thermal and acoustic insulation included.",
 } = Astro.props;
+
+// Datos estructurados para buscadores: quién es Dryza y qué es este sitio.
+// Google usa esto para entender la marca; no garantiza rich results por sí solo.
+const jsonLd = {
+	"@context": "https://schema.org",
+	"@graph": [
+		{
+			"@type": "Organization",
+			name: "Dryza",
+			url: Astro.site?.href,
+			logo: new URL("/logo-dryza.svg", Astro.site ?? Astro.url.origin).href,
+			description,
+		},
+		{
+			"@type": "WebSite",
+			name: "Dryza",
+			url: Astro.site?.href ?? Astro.url.origin,
+		},
+	],
+};
 ---
 
 <!doctype html>
@@ -21,19 +41,35 @@ const {
 
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+		<title>{title}</title>
+
+		<meta name="description" content={description} />
+
+		{Astro.site && <link rel="canonical" href={new URL(Astro.url.pathname, Astro.site).href} />}
+
 		<meta property="og:title" content={title} />
 
 		<meta property="og:description" content={description} />
 
 		<meta property="og:type" content="website" />
 
+		<meta property="og:site_name" content="Dryza" />
+
+		<meta property="og:locale" content="en_US" />
+
+		{Astro.site && <meta property="og:url" content={new URL(Astro.url.pathname, Astro.site).href} />}
+
 		<meta property="og:image" content="/og-image.jpg" />
 
 		<meta name="twitter:card" content="summary_large_image" />
 
+		<meta name="twitter:title" content={title} />
+
+		<meta name="twitter:description" content={description} />
+
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
-		<title>{title}</title>
+		<script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
 	</head>
 
 	<body class="min-h-screen bg-white text-gray-900 antialiased">

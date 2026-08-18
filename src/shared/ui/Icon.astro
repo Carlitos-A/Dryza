@@ -1,0 +1,21 @@
+---
+import { icons, type IconName } from "./icons";
+
+interface Props {
+	/** Nombre del archivo en `src/assets/icons/` (registrado en `icons.ts`). */
+	name: IconName;
+	class?: string;
+}
+
+const { name, class: className } = Astro.props;
+
+// El SVG se inyecta inline para heredar `currentColor`. Como el contenido
+// llega vía `set:html`, no recibe el atributo de scope de Astro: los estilos
+// que lo apunten desde el padre deben usar `:global()`.
+// Todos los íconos del proyecto son decorativos: siempre `aria-hidden`.
+const svg = icons[name]
+	.replace("<svg", `<svg class="${className ?? ""}"`)
+	.replace("<svg", '<svg aria-hidden="true"');
+---
+
+<Fragment set:html={svg} />
