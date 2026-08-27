@@ -1,0 +1,117 @@
+---
+import Icon from "../../shared/ui/Icon.astro";
+import { contact, defaultMessage, quickReplies } from "./contact";
+
+// wa.me abre WhatsApp (app en el teléfono, WhatsApp Web en el ordenador)
+// con el texto ya escrito. El número va sin "+" ni separadores.
+const waLink = (text: string) =>
+	`https://wa.me/${contact.whatsappNumber}?text=${encodeURIComponent(text)}`;
+---
+
+<div class="mx-auto w-full max-w-sm">
+	<div
+		class="rounded-[2.25rem] border border-white/10 bg-neutral-900 p-2 shadow-xl shadow-neutral-950/60"
+	>
+		<div class="overflow-hidden rounded-[1.75rem]">
+			{/* Barra superior estilo WhatsApp. */}
+			<div class="flex items-center gap-3 bg-whatsapp-header px-4 py-3">
+				<div
+					class="h-9 w-9 shrink-0 overflow-hidden rounded-full bg-primary"
+				>
+					<img
+						src="/icon2.svg"
+						alt="Dryza logo"
+						class="h-full w-full object-contain"
+					/>
+				</div>
+				<div class="min-w-0">
+					<p class="truncate text-sm font-semibold text-white">Dryza Panels</p>
+					<p class="text-xs text-white/70">online</p>
+				</div>
+				<p class="ml-auto shrink-0 text-xs text-white/60">
+					{contact.phoneDisplay}
+				</p>
+			</div>
+
+			{/* Conversación simulada. */}
+			<div class="flex flex-col gap-2.5 bg-whatsapp-chat px-3 py-4">
+				<p
+					class="max-w-[85%] self-start rounded-2xl rounded-bl-md bg-white px-3.5 py-2.5 text-sm leading-6 text-neutral-900 shadow-sm"
+				>
+					Hi! you can reach out to Dryza at any time. How can we help you today?
+				</p>
+				<p
+					class="max-w-[85%] self-start rounded-2xl rounded-bl-md bg-white px-3.5 py-2.5 text-sm leading-6 text-neutral-900 shadow-sm"
+				>
+					Tap any of these messages and we'll continue the conversation:
+				</p>
+
+				{
+					quickReplies.map((reply) => (
+						<a
+							href={waLink(reply)}
+							target="_blank"
+							rel="noopener noreferrer"
+							class="group max-w-[85%] self-end rounded-2xl rounded-br-md bg-whatsapp-bubble px-3.5 py-2.5 text-sm leading-6 text-neutral-900 shadow-sm transition-[background-color,box-shadow] duration-200 ease-out hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-whatsapp motion-reduce:transition-none"
+						>
+							{reply}
+							<span class="mt-1 flex items-center justify-end gap-1 text-[0.65rem] font-medium text-neutral-500">
+								tap to open WhatsApp
+								<Icon name="arrow-right" class="h-3 w-3" />
+							</span>
+						</a>
+					))
+				}
+			</div>
+
+			{/* Campo libre: escribe tu propio mensaje y ábrelo en WhatsApp. */}
+			<form
+				data-wa-form
+				data-wa-number={contact.whatsappNumber}
+				data-wa-default={defaultMessage}
+				class="flex items-center gap-2 border-t border-neutral-200 bg-whatsapp-chat px-3 py-3"
+			>
+				<input
+					type="text"
+					name="message"
+					placeholder="Message"
+					aria-label="Write your own WhatsApp message"
+					class="min-w-0 flex-1 rounded-full border border-neutral-300 bg-white px-4 py-2.5 text-sm text-text placeholder:text-text-muted focus:border-brand-whatsapp focus:outline-none"
+				/>
+				<button
+					type="submit"
+					aria-label="Open this message in WhatsApp"
+					class="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-brand-whatsapp text-white shadow-sm transition-[background-color,box-shadow] duration-200 ease-out hover:bg-whatsapp-hover hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-whatsapp motion-reduce:transition-none"
+				>
+					<Icon name="send" class="h-4 w-4" />
+				</button>
+			</form>
+		</div>
+	</div>
+
+	<p class="mt-4 text-center text-xs leading-5 text-white/50">
+		Opens WhatsApp with your message ready to send — works on your phone and
+		on WhatsApp Web.
+	</p>
+</div>
+
+<script>
+	// Igual que el mockup de iMessage, pero construyendo un enlace wa.me que
+	// se abre en pestaña nueva (es una URL https, no un esquema del sistema).
+	const form = document.querySelector<HTMLFormElement>("[data-wa-form]");
+
+	form?.addEventListener("submit", (event) => {
+		event.preventDefault();
+
+		const data = new FormData(form);
+		const typed = String(data.get("message") ?? "").trim();
+		const text = typed || (form.dataset.waDefault ?? "Hi!");
+		const number = form.dataset.waNumber ?? "";
+
+		window.open(
+			`https://wa.me/${number}?text=${encodeURIComponent(text)}`,
+			"_blank",
+			"noopener",
+		);
+	});
+</script>
