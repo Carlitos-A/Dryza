@@ -1,0 +1,124 @@
+---
+import Icon from "../../shared/ui/Icon.astro";
+import { contact, defaultMessage, quickReplies } from "./contact";
+
+// No existe un "wa.me" para iMessage: el esquema estándar es `sms:`. En
+// iPhone abre Messages (iMessage) y en Android la app de SMS, en ambos con
+// el texto ya escrito. El separador `?&` es el truco compatible con ambos
+// sistemas (iOS espera `&body=` y Android `?body=`).
+const smsLink = (text: string) =>
+	`sms:${contact.smsNumber}?&body=${encodeURIComponent(text)}`;
+---
+
+<div class="mx-auto w-full max-w-sm">
+	{/* Mockup de teléfono: marco oscuro y "pantalla" con la conversación. */}
+	<div
+		class="rounded-[2.25rem] border border-white/10 bg-neutral-900 p-2 shadow-xl shadow-neutral-950/60"
+	>
+		<div class="overflow-hidden rounded-[1.75rem]">
+			{/* Barra superior estilo Messages (iOS). */}
+			<div
+				class="flex items-center gap-3 border-b border-neutral-200 bg-neutral-100 px-4 py-3"
+			>
+				<div
+					class="h-9 w-9 shrink-0 overflow-hidden rounded-full bg-primary"
+				>
+					<img
+						src="/icon2.svg"
+						alt="Dryza logo"
+						class="h-full w-full object-contain"
+					/>
+				</div>
+				<div class="min-w-0">
+					<p class="truncate text-sm font-semibold text-neutral-900">
+						Dryza Panels
+					</p>
+					<p class="text-xs text-neutral-500">iMessage · replies fast</p>
+				</div>
+				<p class="ml-auto shrink-0 text-xs text-neutral-500">
+					{contact.phoneDisplay}
+				</p>
+			</div>
+
+			{/* Conversación simulada. */}
+			<div class="flex flex-col gap-2.5 bg-imessage-chat px-3 py-4">
+				<p
+					class="max-w-[85%] self-start rounded-2xl rounded-bl-md bg-imessage-bubble px-3.5 py-2.5 text-sm leading-6 text-neutral-900"
+				>
+					Hi! you can reach out to Dryza at any time. How can we help you today?
+				</p>
+				<p
+					class="max-w-[85%] self-start rounded-2xl rounded-bl-md bg-imessage-bubble px-3.5 py-2.5 text-sm leading-6 text-neutral-900"
+				>
+					Tap any of these messages and we'll continue the conversation:
+				</p>
+
+				{
+					quickReplies.map((reply) => (
+						<a
+							href={smsLink(reply)}
+							class="group max-w-[85%] self-end rounded-2xl rounded-br-md bg-imessage px-3.5 py-2.5 text-sm leading-6 text-white transition-[background-color,box-shadow] duration-200 ease-out hover:bg-imessage-hover hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-imessage motion-reduce:transition-none"
+						>
+							{reply}
+							<span class="mt-1 flex items-center justify-end gap-1 text-[0.65rem] font-medium text-white/70">
+								tap to open Messages
+								<Icon name="arrow-right" class="h-3 w-3" />
+							</span>
+						</a>
+					))
+				}
+			</div>
+
+			{/* Campo libre: escribe tu propio mensaje y ábrelo en Messages. */}
+			<form
+				data-sms-form
+				data-sms-number={contact.smsNumber}
+				data-sms-default={defaultMessage}
+				class="flex items-center gap-2 border-t border-neutral-200 bg-imessage-chat px-3 py-3"
+			>
+				<input
+					type="text"
+					name="message"
+					placeholder="iMessage"
+					aria-label="Write your own text message"
+					class="min-w-0 flex-1 rounded-full border border-neutral-300 bg-white px-4 py-2.5 text-sm text-text placeholder:text-text-muted focus:border-imessage focus:outline-none"
+				/>
+				<button
+					type="submit"
+					aria-label="Open this message in Messages"
+					class="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-imessage text-white shadow-sm transition-[background-color,box-shadow] duration-200 ease-out hover:bg-imessage-hover hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-imessage motion-reduce:transition-none"
+				>
+					<Icon name="arrow-right" class="h-4 w-4 -rotate-90" />
+				</button>
+			</form>
+		</div>
+	</div>
+
+	<p class="mt-4 text-center text-xs leading-5 text-white/50">
+		On your phone this opens Messages with the text ready to send. On a
+		computer this doesn't work, text or call us at
+		<a
+			href={`tel:${contact.smsNumber}`}
+			class="font-semibold text-white/70 underline-offset-2 hover:underline"
+			>{contact.phoneDisplay}</a
+		>.
+	</p>
+</div>
+
+<script>
+	// El campo libre construye el enlace sms: al vuelo con lo que escribió el
+	// visitante (o un saludo por defecto si lo deja vacío) y se lo entrega al
+	// sistema, que abre la app de mensajes del teléfono.
+	const form = document.querySelector<HTMLFormElement>("[data-sms-form]");
+
+	form?.addEventListener("submit", (event) => {
+		event.preventDefault();
+
+		const data = new FormData(form);
+		const typed = String(data.get("message") ?? "").trim();
+		const text = typed || (form.dataset.smsDefault ?? "Hi!");
+		const number = form.dataset.smsNumber ?? "";
+
+		window.location.href = `sms:${number}?&body=${encodeURIComponent(text)}`;
+	});
+</script>
