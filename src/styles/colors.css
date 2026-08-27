@@ -79,6 +79,53 @@
   --color-cta-text: #ffffff;
 
   /* =========================
+     CHANNEL BRAND COLORS
+     Acentos de las apps del selector de canales de /contacto
+     (halo del icono activo y detalles de cada mockup)
+     ========================= */
+
+  --color-brand-imessage: #34c759;
+  --color-brand-gmail: #ea4335;
+  --color-brand-whatsapp: #25d366;
+  --color-brand-instagram: #d62976;
+
+  /* =========================
+     IMESSAGE
+     Colores del mockup de chat estilo Messages (iOS) de /contacto
+     ========================= */
+
+  --color-imessage: #007aff;
+  --color-imessage-hover: #0066d6;
+  --color-imessage-chat: #ffffff;
+  --color-imessage-bubble: #e9e9eb;
+
+  /* =========================
+     WHATSAPP
+     Colores del mockup de chat estilo WhatsApp de /contacto
+     ========================= */
+
+  --color-whatsapp-header: #075e54;
+  --color-whatsapp-chat: #ece5dd;
+  --color-whatsapp-bubble: #dcf8c6;
+  --color-whatsapp-hover: #1fbd59;
+
+  /* =========================
+     GMAIL
+     Colores de la ventana de redacción estilo Gmail de /contacto
+     ========================= */
+
+  --color-gmail-header: #404040;
+  --color-gmail-send: #0b57d0;
+  --color-gmail-send-hover: #0842a0;
+
+  /* =========================
+     INSTAGRAM
+     Colores del mockup de DM estilo Instagram de /contacto
+     ========================= */
+
+  --color-instagram-bubble: #efefef;
+
+  /* =========================
      STATES
      Mantenerlos funcionales, no necesariamente corporativos
      ========================= */
