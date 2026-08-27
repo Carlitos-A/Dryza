@@ -59,7 +59,7 @@ const channels: ReadonlyArray<{
 			<div
 				data-animate
 				style="--reveal-delay: 240ms;"
-				class="mx-auto mt-8 flex max-w-2xl flex-wrap items-start justify-center gap-4 sm:gap-8 lg:mt-8"
+				class="mx-auto mt-8 flex max-w-2xl flex-wrap items-start justify-center gap-3 sm:gap-8 lg:mt-8"
 				role="tablist"
 				aria-label="Choose how to contact us"
 			>
@@ -74,7 +74,7 @@ const channels: ReadonlyArray<{
 							tabindex={index === 0 ? 0 : -1}
 							data-channel-button={channel.id}
 							style={`--glow: var(${channel.glow});`}
-							class={`channel-button flex w-20 cursor-pointer flex-col items-center gap-2.5 rounded-2xl p-2 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white${index === 0 ? " is-active" : ""}`}
+							class={`channel-button flex w-16 cursor-pointer flex-col items-center gap-2.5 rounded-2xl p-2 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white${index === 0 ? " is-active" : ""}`}
 						>
 							<span class="channel-icon block h-14 w-14 rounded-[23%] sm:h-16 sm:w-16">
 								<Icon name={channel.icon} class="h-full w-full" />

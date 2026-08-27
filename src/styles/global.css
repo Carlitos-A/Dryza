@@ -1,6 +1,23 @@
 @import "../styles/colors.css";
 @import "tailwindcss";
 
+/* Nada puede sobresalir del ancho del viewport: los reveals con translateX
+   (DesignsSection, BenefitsSection) extienden el área desplazable y en móvil
+   dejaban arrastrar la página mostrando un margen blanco. `clip` no crea un
+   contenedor de scroll (a diferencia de `hidden`), así que no rompe
+   `position: sticky` ni el scroll-lock del menú. */
+html,
+body {
+  overflow-x: clip;
+}
+
+@supports not (overflow: clip) {
+  html,
+  body {
+    overflow-x: hidden;
+  }
+}
+
 /* Degradado de marca de Instagram: burbujas propias y anillo del avatar
    en el mockup de DM de /contacto. */
 @utility bg-instagram-gradient {
