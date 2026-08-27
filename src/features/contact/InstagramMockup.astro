@@ -1,0 +1,159 @@
+---
+import Icon from "../../shared/ui/Icon.astro";
+import { contact, defaultMessage, quickReplies } from "./contact";
+
+// Instagram no permite pre-rellenar DMs desde la web. Lo más parecido:
+// copiar el mensaje al portapapeles y abrir la conversación directa
+// (ig.me/m/<usuario>) para que el visitante solo tenga que pegarlo.
+const igChatUrl = `https://ig.me/m/${contact.instagramUser}`;
+const igProfileUrl = `https://instagram.com/${contact.instagramUser}`;
+---
+
+<div class="mx-auto w-full max-w-sm">
+	<div
+		data-ig-panel
+		data-ig-url={igChatUrl}
+		data-ig-default={defaultMessage}
+		class="rounded-[2.25rem] border border-white/10 bg-neutral-900 p-2 shadow-xl shadow-neutral-950/60"
+	>
+		<div class="overflow-hidden rounded-[1.75rem]">
+			{/* Barra superior estilo Instagram DM. */}
+			<div
+				class="flex items-center gap-3 border-b border-neutral-200 bg-white px-4 py-3"
+			>
+				{/* Avatar con el anillo degradado característico de Instagram. */}
+				<span
+					class="block h-9 w-9 shrink-0 rounded-full bg-instagram-gradient p-[2px]"
+				>
+					<span
+						class="block h-full w-full overflow-hidden rounded-full bg-primary"
+					>
+						<img
+							src="/icon2.svg"
+							alt="Dryza logo"
+							class="h-full w-full object-contain"
+						/>
+					</span>
+				</span>
+				<div class="min-w-0">
+					<p class="truncate text-sm font-semibold text-neutral-900">
+						{contact.instagramUser}
+					</p>
+					<p class="text-xs text-neutral-500">Active now</p>
+				</div>
+			</div>
+
+			{/* Conversación simulada. */}
+			<div class="flex flex-col gap-2.5 bg-white px-3 py-4">
+				<p
+					class="max-w-[85%] self-start rounded-2xl rounded-bl-md bg-instagram-bubble px-3.5 py-2.5 text-sm leading-6 text-neutral-900"
+				>
+					Hi! you can reach out to Dryza at any time. How can we help you today?
+				</p>
+				<p
+					class="max-w-[85%] self-start rounded-2xl rounded-bl-md bg-instagram-bubble px-3.5 py-2.5 text-sm leading-6 text-neutral-900"
+				>
+					Tap a message to copy it, then paste it in our Instagram chat:
+				</p>
+
+				{
+					quickReplies.map((reply) => (
+						<button
+							type="button"
+							data-ig-message={reply}
+							class="group max-w-[85%] cursor-pointer self-end rounded-2xl rounded-br-md bg-instagram-gradient px-3.5 py-2.5 text-left text-sm leading-6 text-white transition-[box-shadow,transform] duration-200 ease-out hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-instagram motion-reduce:transition-none"
+						>
+							{reply}
+							<span class="mt-1 flex items-center justify-end gap-1 text-[0.65rem] font-medium text-white/80">
+								tap to copy &amp; open Instagram
+								<Icon name="arrow-right" class="h-3 w-3" />
+							</span>
+						</button>
+					))
+				}
+
+				{/* Confirmación de "mensaje copiado" tras tocar una burbuja. */}
+				<p
+					data-ig-status
+					class="hidden items-center gap-1 self-end text-xs font-medium text-neutral-500"
+					aria-live="polite"
+				>
+					<Icon name="check" class="h-3.5 w-3.5 text-brand-whatsapp" />
+					Copied — just paste it in the Instagram chat.
+				</p>
+			</div>
+
+			{/* Campo libre: copia tu propio mensaje y abre el chat. */}
+			<form
+				data-ig-form
+				class="flex items-center gap-2 border-t border-neutral-200 bg-white px-3 py-3"
+			>
+				<input
+					type="text"
+					name="message"
+					placeholder="Message…"
+					aria-label="Write your own Instagram message"
+					class="min-w-0 flex-1 rounded-full border border-neutral-300 bg-white px-4 py-2.5 text-sm text-text placeholder:text-text-muted focus:border-brand-instagram focus:outline-none"
+				/>
+				<button
+					type="submit"
+					aria-label="Copy this message and open Instagram"
+					class="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-instagram-gradient text-white shadow-sm transition-[box-shadow] duration-200 ease-out hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-instagram motion-reduce:transition-none"
+				>
+					<Icon name="send" class="h-4 w-4" />
+				</button>
+			</form>
+		</div>
+	</div>
+
+	<p class="mt-4 text-center text-xs leading-5 text-white/50">
+		Instagram doesn't let websites pre-fill DMs, so we copy your message and
+		open the chat — just paste and send. Find us at
+		<a
+			href={igProfileUrl}
+			target="_blank"
+			rel="noopener noreferrer"
+			class="font-semibold text-white/70 underline-offset-2 hover:underline"
+			>@{contact.instagramUser}</a
+		>.
+	</p>
+</div>
+
+<script>
+	// Copia el texto elegido al portapapeles y abre la conversación de
+	// Instagram en pestaña nueva. Si el portapapeles no está disponible
+	// (contexto no seguro, permiso denegado), igualmente abre el chat.
+	const panel = document.querySelector<HTMLElement>("[data-ig-panel]");
+
+	if (panel) {
+		const status = panel.querySelector<HTMLElement>("[data-ig-status]");
+		const form = panel.querySelector<HTMLFormElement>("[data-ig-form]");
+		const url = panel.dataset.igUrl ?? "";
+
+		const copyAndOpen = async (text: string) => {
+			try {
+				await navigator.clipboard.writeText(text);
+				status?.classList.remove("hidden");
+				status?.classList.add("flex");
+			} catch {
+				// Sin portapapeles: el visitante escribe el mensaje a mano.
+			}
+			window.open(url, "_blank", "noopener");
+		};
+
+		panel.querySelectorAll<HTMLButtonElement>("[data-ig-message]").forEach(
+			(button) => {
+				button.addEventListener("click", () => {
+					copyAndOpen(button.dataset.igMessage ?? "");
+				});
+			},
+		);
+
+		form?.addEventListener("submit", (event) => {
+			event.preventDefault();
+			const data = new FormData(form);
+			const typed = String(data.get("message") ?? "").trim();
+			copyAndOpen(typed || (panel.dataset.igDefault ?? "Hi!"));
+		});
+	}
+</script>
