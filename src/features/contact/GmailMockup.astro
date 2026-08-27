@@ -1,0 +1,99 @@
+---
+import Icon from "../../shared/ui/Icon.astro";
+import { contact, emailSubjects } from "./contact";
+---
+
+<div class="mx-auto w-full max-w-md">
+	{/* Ventana de redacción estilo Gmail ("New Message"). */}
+	<div
+		class="overflow-hidden rounded-2xl border border-white/10 bg-white shadow-2xl shadow-neutral-950/60"
+	>
+		<div class="flex items-center justify-between bg-gmail-header px-4 py-2.5">
+			<p class="text-sm font-medium text-white">New Message</p>
+			<Icon name="mail" class="h-4 w-4 text-white/60" />
+		</div>
+
+		<form data-gmail-form data-gmail-to={contact.email} class="flex flex-col">
+			<div
+				class="flex items-center gap-3 border-b border-neutral-200 px-4 py-2.5 text-sm"
+			>
+				<span class="shrink-0 text-neutral-500">To</span>
+				<span
+					class="truncate rounded-full bg-neutral-100 px-2.5 py-0.5 text-xs font-medium text-neutral-700"
+					>{contact.email}</span
+				>
+			</div>
+
+			<div
+				class="flex items-center gap-3 border-b border-neutral-200 px-4 py-1.5 text-sm"
+			>
+				<label for="gmail-subject" class="shrink-0 text-neutral-500"
+					>Subject</label
+				>
+				<select
+					id="gmail-subject"
+					name="subject"
+					required
+					class="min-w-0 flex-1 cursor-pointer bg-transparent py-1.5 text-neutral-900 focus:outline-none"
+				>
+					{
+						emailSubjects.map((subject) => (
+							<option value={subject}>{subject}</option>
+						))
+					}
+				</select>
+			</div>
+
+			<textarea
+				name="message"
+				required
+				rows="7"
+				aria-label="Message"
+				placeholder="Tell us about your project: room size, where the moisture problem is, timeline. Anything you want to share will help us give you a better quote..."
+				class="resize-none px-4 py-3 text-sm leading-6 text-neutral-900 placeholder:text-neutral-400 focus:outline-none"
+			></textarea>
+
+			<div class="flex items-center px-4 pb-4">
+				<button
+					type="submit"
+					class="inline-flex items-center gap-2 rounded-full bg-gmail-send px-6 py-2 text-sm font-medium text-white shadow-sm transition-[background-color,box-shadow] duration-200 ease-out hover:bg-gmail-send-hover hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gmail-send motion-reduce:transition-none"
+				>
+					Send
+					<Icon name="send" class="h-3.5 w-3.5" />
+				</button>
+			</div>
+		</form>
+	</div>
+
+	<p class="mt-4 text-center text-xs leading-5 text-white/50">
+		Opens Gmail with everything pre-filled — just hit send. Don't use Gmail?
+		<a
+			href={`mailto:${contact.email}`}
+			class="font-semibold text-white/70 underline-offset-2 hover:underline"
+			>Write us directly</a
+		>.
+	</p>
+</div>
+
+<script>
+	// Al "enviar" abrimos la ventana de redacción de Gmail (mail.google.com)
+	// con destinatario, asunto y cuerpo ya rellenos. No hay backend: todo se
+	// entrega al cliente de correo del visitante.
+	const form = document.querySelector<HTMLFormElement>("[data-gmail-form]");
+
+	form?.addEventListener("submit", (event) => {
+		event.preventDefault();
+
+		const data = new FormData(form);
+		const subject = String(data.get("subject") ?? "").trim();
+		const message = String(data.get("message") ?? "").trim();
+		const to = form.dataset.gmailTo ?? "";
+
+		const url =
+			`https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(to)}` +
+			`&su=${encodeURIComponent(`Dryza website client - ${subject}`)}` +
+			`&body=${encodeURIComponent(message)}`;
+
+		window.open(url, "_blank", "noopener");
+	});
+</script>

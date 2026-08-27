@@ -1,2 +1,8 @@
 @import "../styles/colors.css";
 @import "tailwindcss";
+
+/* Degradado de marca de Instagram: burbujas propias y anillo del avatar
+   en el mockup de DM de /contacto. */
+@utility bg-instagram-gradient {
+  background-image: linear-gradient(135deg, #4f5bd5 0%, #962fbf 55%, #d62976 100%);
+}

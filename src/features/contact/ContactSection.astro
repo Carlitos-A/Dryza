@@ -1,0 +1,300 @@
+---
+import Icon from "../../shared/ui/Icon.astro";
+import GmailMockup from "./GmailMockup.astro";
+import IMessageMockup from "./IMessageMockup.astro";
+import InstagramMockup from "./InstagramMockup.astro";
+import WhatsAppMockup from "./WhatsAppMockup.astro";
+import type { IconName } from "../../shared/ui/icons";
+import { contact } from "./contact";
+
+// Canales del selector. El primero (iMessage) es el activo por defecto.
+// `glow` es el token de color que alimenta el halo del icono seleccionado
+// (variable CSS --glow, ver el <style> de abajo).
+const channels: ReadonlyArray<{
+	id: string;
+	label: string;
+	icon: IconName;
+	glow: string;
+}> = [
+	{ id: "imessage", label: "iMessage", icon: "imessage", glow: "--color-brand-imessage" },
+	{ id: "gmail", label: "Gmail", icon: "gmail", glow: "--color-brand-gmail" },
+	{ id: "whatsapp", label: "WhatsApp", icon: "whatsapp", glow: "--color-brand-whatsapp" },
+	{ id: "instagram", label: "Instagram", icon: "instagram", glow: "--color-brand-instagram" },
+];
+---
+
+{/* pt generoso para compensar el header fijo; sin hero en esta página.
+    Fondo oscuro: el header es transparente con texto blanco hasta hacer
+    scroll, así que la página debe arrancar oscura para que sea legible. */}
+<section class="relative bg-neutral-950 text-white">
+	{/* Halo rojo tenue en la parte inferior: mismo cierre visual que la
+	    sección de beneficios en la home. */}
+	<div
+		class="pointer-events-none absolute inset-x-0 bottom-0 z-0 h-1/2 bg-[radial-gradient(ellipse_at_center,color-mix(in_srgb,var(--color-primary-800)_45%,transparent),transparent_70%)]"
+		aria-hidden="true"
+	>
+	</div>
+
+	<div
+		class="relative mx-auto max-w-7xl px-5 pb-20 pt-32 sm:px-8 lg:px-10 lg:pb-28 lg:pt-40"
+	>
+		<div class="mx-auto max-w-3xl text-center">
+			<p
+				data-animate
+				class="text-xs font-semibold uppercase tracking-[0.28em] text-primary-300 sm:text-sm"
+			>
+				Contact
+			</p>
+			<h1
+				data-animate
+				style="--reveal-delay: 90ms;"
+				class="mt-4 text-3xl font-semibold tracking-tight sm:text-4xl lg:text-5xl"
+			>
+				Let's talk about your project
+			</h1>
+
+		<div data-channels>
+			{/* Selector de canal: 4 iconos estilo app. El activo se ilumina con
+			    un halo del color de la marca (clase .is-active). */}
+			<div
+				data-animate
+				style="--reveal-delay: 240ms;"
+				class="mx-auto mt-8 flex max-w-2xl flex-wrap items-start justify-center gap-4 sm:gap-8 lg:mt-8"
+				role="tablist"
+				aria-label="Choose how to contact us"
+			>
+				{
+					channels.map((channel, index) => (
+						<button
+							type="button"
+							role="tab"
+							id={`channel-tab-${channel.id}`}
+							aria-selected={index === 0 ? "true" : "false"}
+							aria-controls={`channel-panel-${channel.id}`}
+							tabindex={index === 0 ? 0 : -1}
+							data-channel-button={channel.id}
+							style={`--glow: var(${channel.glow});`}
+							class={`channel-button flex w-20 cursor-pointer flex-col items-center gap-2.5 rounded-2xl p-2 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white${index === 0 ? " is-active" : ""}`}
+						>
+							<span class="channel-icon block h-14 w-14 rounded-[23%] sm:h-16 sm:w-16">
+								<Icon name={channel.icon} class="h-full w-full" />
+							</span>
+							<span class="channel-label text-xs font-semibold sm:text-sm">
+								{channel.label}
+							</span>
+						</button>
+					))
+				}
+			</div>
+
+			{/* Mockups: todos viven en el DOM; el script muestra solo el del
+			    canal seleccionado. */}
+			<div
+				data-animate
+				style="--reveal-delay: 320ms;"
+				class="mt-6 sm:mt-6"
+			>
+				<div
+					data-channel-panel="imessage"
+					id="channel-panel-imessage"
+					role="tabpanel"
+					aria-labelledby="channel-tab-imessage"
+				>
+					<IMessageMockup />
+				</div>
+				<div
+					data-channel-panel="gmail"
+					id="channel-panel-gmail"
+					role="tabpanel"
+					aria-labelledby="channel-tab-gmail"
+					hidden
+				>
+					<GmailMockup />
+				</div>
+				<div
+					data-channel-panel="whatsapp"
+					id="channel-panel-whatsapp"
+					role="tabpanel"
+					aria-labelledby="channel-tab-whatsapp"
+					hidden
+				>
+					<WhatsAppMockup />
+				</div>
+				<div
+					data-channel-panel="instagram"
+					id="channel-panel-instagram"
+					role="tabpanel"
+					aria-labelledby="channel-tab-instagram"
+					hidden
+				>
+					<InstagramMockup />
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+<script>
+	// Selector de canales (patrón tabs): al pulsar un icono se ilumina y se
+	// muestra su mockup; las flechas izquierda/derecha también cambian de
+	// canal, como exige el patrón tablist.
+	const root = document.querySelector<HTMLElement>("[data-channels]");
+
+	if (root) {
+		const tabs = Array.from(
+			root.querySelectorAll<HTMLButtonElement>("[data-channel-button]"),
+		);
+		const panels = Array.from(
+			root.querySelectorAll<HTMLElement>("[data-channel-panel]"),
+		);
+
+		const selectChannel = (id: string) => {
+			for (const tab of tabs) {
+				const active = tab.dataset.channelButton === id;
+				tab.classList.toggle("is-active", active);
+				tab.setAttribute("aria-selected", String(active));
+				tab.tabIndex = active ? 0 : -1;
+			}
+			for (const panel of panels) {
+				panel.hidden = panel.dataset.channelPanel !== id;
+			}
+		};
+
+		tabs.forEach((tab, index) => {
+			tab.addEventListener("click", () =>
+				selectChannel(tab.dataset.channelButton ?? ""),
+			);
+			tab.addEventListener("keydown", (event) => {
+				if (event.key !== "ArrowRight" && event.key !== "ArrowLeft") return;
+				event.preventDefault();
+				const step = event.key === "ArrowRight" ? 1 : -1;
+				const next = tabs[(index + step + tabs.length) % tabs.length];
+				next.focus();
+				selectChannel(next.dataset.channelButton ?? "");
+			});
+		});
+	}
+</script>
+
+<script>
+	import "../../shared/ui/revealOnScroll";
+</script>
+
+<style>
+	@keyframes reveal-contact {
+		from {
+			opacity: 0;
+			transform: translateY(2rem);
+		}
+		to {
+			opacity: 1;
+			transform: none;
+		}
+	}
+
+	/* Fallback (sin animaciones ligadas al scroll): el IntersectionObserver
+	   añade `.is-visible` y dispara la entrada escalonada. */
+	[data-animate] {
+		opacity: 0;
+		transform: translateY(2rem);
+		transition:
+			opacity 0.7s ease-out,
+			transform 0.7s ease-out;
+		transition-delay: var(--reveal-delay, 0ms);
+		will-change: opacity, transform;
+	}
+
+	[data-animate].is-visible {
+		opacity: 1;
+		transform: none;
+	}
+
+	/* Navegadores modernos: el despliegue se sincroniza con el scroll. */
+	@supports (animation-timeline: view()) {
+		[data-animate] {
+			opacity: 1;
+			transform: none;
+			transition: none;
+			animation: reveal-contact linear both;
+			animation-timeline: view();
+			animation-range: entry 10% cover 30%;
+		}
+	}
+
+	/* Selector de canales: inactivos atenuados, activo iluminado con halo
+	   del color de la marca (--glow se define inline en cada botón). */
+	.channel-button .channel-icon {
+		filter: grayscale(0.55) brightness(0.75);
+		transition:
+			filter 0.25s ease-out,
+			transform 0.25s ease-out,
+			box-shadow 0.25s ease-out;
+	}
+
+	.channel-button .channel-label {
+		color: rgb(255 255 255 / 0.55);
+		transition: color 0.25s ease-out;
+	}
+
+	.channel-button:hover .channel-icon {
+		filter: grayscale(0.15) brightness(0.92);
+		transform: translateY(-2px);
+	}
+
+	.channel-button:hover .channel-label {
+		color: rgb(255 255 255 / 0.85);
+	}
+
+	.channel-button.is-active .channel-icon {
+		filter: none;
+		transform: translateY(-3px) scale(1.05);
+		box-shadow:
+			0 0 0 2px #ffffff,
+			0 10px 34px -4px var(--glow, transparent),
+			0 0 22px -2px var(--glow, transparent);
+	}
+
+	.channel-button.is-active .channel-label {
+		color: #ffffff;
+	}
+
+	/* Entrada del mockup al cambiar de canal (quitar `hidden` re-dispara la
+	   animación porque el elemento pasa de display:none a visible). */
+	@keyframes channel-panel-in {
+		from {
+			opacity: 0;
+			transform: translateY(0.9rem) scale(0.985);
+		}
+		to {
+			opacity: 1;
+			transform: none;
+		}
+	}
+
+	[data-channel-panel]:not([hidden]) {
+		animation: channel-panel-in 0.38s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		[data-animate] {
+			opacity: 1;
+			transform: none;
+			transition: none;
+			animation: none;
+		}
+
+		.channel-button .channel-icon,
+		.channel-button .channel-label {
+			transition: none;
+		}
+
+		.channel-button.is-active .channel-icon,
+		.channel-button:hover .channel-icon {
+			transform: none;
+		}
+
+		[data-channel-panel]:not([hidden]) {
+			animation: none;
+		}
+	}
+</style>
