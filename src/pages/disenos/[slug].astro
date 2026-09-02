@@ -1,0 +1,31 @@
+---
+import type { GetStaticPaths } from "astro";
+import MainLayout from "../../layouts/MainLayout.astro";
+import DesignHero from "../../features/designs/DesignHero.astro";
+import DesignStory from "../../features/designs/DesignStory.astro";
+import DesignNav from "../../features/designs/DesignNav.astro";
+import { designs, getAdjacentDesigns, type PanelDesign } from "../../features/designs/designs";
+
+export const getStaticPaths: GetStaticPaths = () =>
+	designs.map((design, index) => ({
+		params: { slug: design.slug },
+		props: { design, index },
+	}));
+
+interface Props {
+	design: PanelDesign;
+	index: number;
+}
+
+const { design, index } = Astro.props;
+const { prev, next } = getAdjacentDesigns(design.slug);
+---
+
+<MainLayout
+	title={`${design.name} Panel | Dryza Decorative Panels`}
+	description={design.paragraphs[0]}
+>
+	<DesignHero design={design} index={index} total={designs.length} />
+	<DesignStory design={design} />
+	<DesignNav prev={prev} next={next} />
+</MainLayout>
