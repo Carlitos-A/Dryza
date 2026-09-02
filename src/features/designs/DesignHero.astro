@@ -1,0 +1,146 @@
+---
+import PanelImage from "../../shared/ui/PanelImage.astro";
+import { getDesignBackground, getPanelImage, type PanelDesign } from "./designs";
+
+interface Props {
+	design: PanelDesign;
+	/** Posición del diseño dentro de la colección (base 0). */
+	index: number;
+	total: number;
+}
+
+const { design, index, total } = Astro.props;
+const panel = getPanelImage(design.slug);
+const background = getDesignBackground(design.slug);
+const position = `${String(index + 1).padStart(2, "0")} / ${String(total).padStart(2, "0")}`;
+---
+
+<section
+	class="relative isolate flex min-h-svh overflow-hidden bg-neutral-950 text-white"
+	aria-labelledby="design-title"
+>
+	{/* Imagen de ambiente de fondo, misma idea que el hero de la home:
+	    <img> plano porque el proyecto no usa Sharp (ver PanelImage). */}
+	<div class="absolute inset-0 -z-20" aria-hidden="true">
+		<img
+			src={background.src}
+			alt=""
+			width={background.width}
+			height={background.height}
+			loading="eager"
+			fetchpriority="high"
+			decoding="async"
+			class="design-hero-bg h-full w-full object-cover"
+		/>
+	</div>
+
+	{/* Veladuras oscuras para que el texto y el panel respiren sobre la foto */}
+	<div
+		class="absolute inset-0 -z-10 bg-[linear-gradient(180deg,rgba(12,9,10,0.62)_0%,rgba(12,9,10,0.42)_34%,rgba(12,9,10,0.55)_67%,rgba(12,9,10,0.9)_100%)]"
+		aria-hidden="true"
+	>
+	</div>
+
+	{/* Fundido final que asienta el hero hacia el negro de la historia */}
+	<div
+		class="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-40 bg-linear-to-b from-transparent to-neutral-950 sm:h-48"
+		aria-hidden="true"
+	>
+	</div>
+
+	<div
+		class="mx-auto flex w-full max-w-7xl flex-1 flex-col items-center justify-center px-5 pb-16 pt-32 text-center sm:px-8 sm:pt-36 lg:px-10"
+	>
+		<p
+			class="design-hero-enter mb-5 flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.24em] text-white/80 sm:text-sm"
+			style="--enter-delay: 0ms;"
+		>
+			<span class="h-px w-7 bg-primary-300"></span>
+			Panel Collection · {position}
+			<span class="h-px w-7 bg-primary-300"></span>
+		</p>
+
+		<h1
+			id="design-title"
+			class="design-hero-enter text-balance text-5xl font-semibold leading-[1.04] tracking-[-0.035em] drop-shadow-sm sm:text-6xl lg:text-7xl"
+			style="--enter-delay: 90ms;"
+		>
+			{design.name}
+		</h1>
+
+		<p
+			class="design-hero-enter mt-4 text-xs font-semibold uppercase tracking-[0.28em] text-primary-200 sm:text-sm"
+			style="--enter-delay: 180ms;"
+		>
+			{design.tag}
+		</p>
+
+		{/* El panel como protagonista, con halo rojo detrás (mismo lenguaje
+		    que el glow de las tarjetas de la colección) */}
+		<div
+			class="design-hero-enter relative mt-10 w-full max-w-md sm:max-w-xl lg:max-w-2xl"
+			style="--enter-delay: 280ms;"
+		>
+			<span aria-hidden="true" class="design-hero-glow" />
+			<PanelImage
+				src={panel}
+				alt={`Panel decorativo ${design.name}`}
+				fit="contain"
+				class="design-hero-art relative z-10 aspect-4/3 p-2 drop-shadow-[0_32px_48px_rgba(0,0,0,0.6)] sm:p-4"
+			/>
+		</div>
+	</div>
+</section>
+
+<style>
+	/* Entrada escalonada al cargar la página; sin JS y desactivada por completo
+	   cuando el usuario prefiere movimiento reducido. */
+	.design-hero-enter {
+		animation: design-hero-rise 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+		animation-delay: var(--enter-delay, 0ms);
+	}
+
+	@keyframes design-hero-rise {
+		from {
+			opacity: 0;
+			transform: translateY(1.75rem);
+		}
+		to {
+			opacity: 1;
+			transform: none;
+		}
+	}
+
+	/* La foto de fondo entra con un zoom muy suave que se asienta. */
+	.design-hero-bg {
+		animation: design-hero-settle 2.4s ease-out both;
+	}
+
+	@keyframes design-hero-settle {
+		from {
+			transform: scale(1.06);
+		}
+		to {
+			transform: none;
+		}
+	}
+
+	/* Halo radial rojo fijo detrás del panel. */
+	.design-hero-glow {
+		position: absolute;
+		inset: -18%;
+		z-index: 0;
+		background: radial-gradient(
+			circle at 50% 50%,
+			color-mix(in srgb, var(--color-primary-500) 45%, transparent),
+			transparent 68%
+		);
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.design-hero-enter,
+		.design-hero-bg {
+			animation: none;
+		}
+	}
+</style>
