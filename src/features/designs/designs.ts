@@ -1,16 +1,26 @@
 import type { ImageMetadata } from "astro";
+import heroTerrace from "../../assets/images/hero-terrace.png";
+import heroPool from "../../assets/images/hero-pool.png";
+import heroScale from "../../assets/images/test1.jpg";
 
 export interface PanelDesign {
 	slug: string;
 	name: string;
 	tag: string;
 	paragraphs: string[];
+	/**
+	 * Historia del diseño para su página de detalle. Mientras no exista el
+	 * copy definitivo, `getDesignStory` devuelve el placeholder lorem ipsum.
+	 */
+	story?: string[];
 }
 
 export const designs: PanelDesign[] = [
 	{
 		slug: "aura",
 		name: "Aura",
+		story: [
+		],
 		tag: "Geometric relief",
 		paragraphs: [
 			"The Aura panel is a decorative ceiling tile featuring a three-dimensional geometric design that combines contemporary elegance with a distinctive architectural character. Its central star-shaped relief creates a dynamic play of light and shadow, adding visual depth and a refined sense of sophistication to any space.",
@@ -21,6 +31,8 @@ export const designs: PanelDesign[] = [
 	{
 		slug: "diamonds",
 		name: "Diamonds",
+		story: [
+		],
 		tag: "Faceted brilliance",
 		paragraphs: [
 			"The Diamonds panel is a decorative ceiling tile featuring a sophisticated geometric design inspired by the brilliance and symmetry of cut diamonds. Its multidirectional relief pattern creates a striking play of light and shadow, adding depth, texture, and visual movement to any interior space.",
@@ -31,6 +43,8 @@ export const designs: PanelDesign[] = [
 	{
 		slug: "rio",
 		name: "Río",
+		story: [
+		],
 		tag: "Fluid movement",
 		paragraphs: [
 			"The Río panel is a decorative ceiling tile featuring a three-dimensional design inspired by the natural movement of flowing water. Its curved embossed lines create a fluid pattern that evokes the gentle motion of river currents, producing a refined play of light and shadow that adds depth and visual movement to any space.",
@@ -41,6 +55,8 @@ export const designs: PanelDesign[] = [
 	{
 		slug: "isla",
 		name: "Isla",
+		story: [
+		],
 		tag: "Minimal texture",
 		paragraphs: [
 			"The Isla panel is a decorative ceiling tile featuring a clean and minimal design highlighted by a subtle radial texture. Inspired by the calm simplicity of natural landscapes, its soft relief creates a gentle play of light that adds depth without overwhelming the space.",
@@ -52,6 +68,8 @@ export const designs: PanelDesign[] = [
 	{
 		slug: "mediterraneo",
 		name: "Mediterráneo",
+		story: [
+		],
 		tag: "Framed elegance",
 		paragraphs: [
 			"The Mediterráneo panel is a decorative ceiling tile featuring a refined and balanced design inspired by the timeless architecture of Mediterranean coastal regions. Its geometric framed relief creates a clean and structured composition that adds visual depth while maintaining a calm and elegant appearance.",
@@ -59,6 +77,7 @@ export const designs: PanelDesign[] = [
 			"This model blends classic and contemporary aesthetics, making it an excellent choice for interiors that seek elegance without excessive ornamentation. The Mediterráneo panel transforms simple ceilings into architectural surfaces with presence and refined character.",
 		],
 	},
+	
 ];
 
 // Panel artwork is resolved from the filename (without extension) matching a
@@ -76,4 +95,47 @@ export function getPanelImage(slug: string): ImageMetadata | undefined {
 	});
 
 	return match?.[1].default;
+}
+
+
+export function getDesignStory(design: PanelDesign): string[] {
+	return design.story ?? [];
+}
+
+// Fondo del hero de cada página de diseño, resuelto por convención igual que
+// el artwork: suelta una imagen nombrada con el slug (ej. `aura.jpg`) en
+// src/assets/images/design-backgrounds/ y se usa sola — sin tocar código.
+const designBackgrounds = import.meta.glob<{ default: ImageMetadata }>(
+	"../../assets/images/design-backgrounds/*.{png,jpg,jpeg,webp,svg}",
+	{ eager: true },
+);
+
+// Mientras no haya fondo dedicado, se rota entre las fotos existentes del
+// sitio para que cada página arranque con un ambiente distinto.
+const fallbackBackgrounds: ImageMetadata[] = [heroTerrace, heroPool, heroScale];
+
+export function getDesignBackground(slug: string): ImageMetadata {
+	const match = Object.entries(designBackgrounds).find(([path]) => {
+		const filename = path.split("/").pop() ?? "";
+		return filename.replace(/\.[^.]+$/, "") === slug;
+	});
+
+	if (match) return match[1].default;
+
+	const index = designs.findIndex((design) => design.slug === slug);
+	return fallbackBackgrounds[index % fallbackBackgrounds.length];
+}
+
+// Navegación circular entre diseños: el último enlaza de vuelta al primero.
+export function getAdjacentDesigns(slug: string): {
+	prev: PanelDesign;
+	next: PanelDesign;
+} {
+	const index = designs.findIndex((design) => design.slug === slug);
+	const last = designs.length - 1;
+
+	return {
+		prev: designs[index <= 0 ? last : index - 1],
+		next: designs[index >= last ? 0 : index + 1],
+	};
 }
