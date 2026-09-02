@@ -1,5 +1,6 @@
 ---
 import { getDesignStory, type PanelDesign } from "./designs";
+import Icon from "../../shared/ui/Icon.astro";
 
 interface Props {
 	design: PanelDesign;
@@ -72,6 +73,29 @@ const story = getDesignStory(design);
 						</p>
 					))
 				}
+
+				{/* CTA de contacto al cierre de la historia */}
+				<div
+					data-animate
+					style="--reveal-delay: 120ms;"
+					class="mt-10 p-6 text-center sm:p-10"
+				>
+					<p class="text-base font-medium text-white sm:text-lg">
+						Interested in {design.name} for your space?
+					</p>
+					<a
+						href="/contacto"
+						class="group mt-4 rounded-full inline-flex min-h-13 items-center gap-3 bg-cta pl-7 pr-2.5 py-2.5 text-sm font-bold tracking-wide text-white shadow-lg shadow-cta/30 transition duration-300 ease-out hover:-translate-y-0.5 hover:bg-cta-hover hover:shadow-xl hover:shadow-cta/40 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white sm:text-base"
+					>
+						Get in touch
+						<span
+							class="grid size-9 place-items-center rounded-full bg-white/15 transition-transform duration-300 group-hover:translate-x-0.5"
+							aria-hidden="true"
+						>
+							<Icon name="arrow-right" class="size-5" />
+						</span>
+					</a>
+				</div>
 			</div>
 		</div>
 	</div>
