@@ -1,0 +1,132 @@
+---
+import { getDesignStory, type PanelDesign } from "./designs";
+
+interface Props {
+	design: PanelDesign;
+}
+
+const { design } = Astro.props;
+const [lead, ...highlights] = design.paragraphs;
+const story = getDesignStory(design);
+---
+
+<section class="bg-neutral-950 text-white" aria-labelledby="design-story-title">
+	<div class="mx-auto max-w-7xl px-5 py-20 sm:px-8 lg:px-10 lg:py-28">
+		<div class="grid gap-12 lg:grid-cols-12 lg:gap-16">
+			{/* Columna editorial: queda fija mientras se lee la historia */}
+			<div class="lg:col-span-5">
+				<div class="lg:sticky lg:top-32">
+					<p
+						data-animate
+						style="--reveal-delay: 0ms;"
+						class="text-xs font-semibold uppercase tracking-[0.28em] text-primary-300 sm:text-sm"
+					>
+						The story
+					</p>
+					<h2
+						id="design-story-title"
+						data-animate
+						style="--reveal-delay: 90ms;"
+						class="mt-4 text-3xl font-semibold tracking-tight text-white sm:text-4xl"
+					>
+						The story behind {design.name}
+					</h2>
+					<p
+						data-animate
+						style="--reveal-delay: 180ms;"
+						class="mt-6 text-lg leading-8 text-white/80"
+					>
+						{lead}
+					</p>
+				</div>
+			</div>
+
+			{/* Cuerpo: descripción del diseño y, debajo, su historia */}
+			<div class="lg:col-span-7">
+				{
+					highlights.map((paragraph, index) => (
+						<p
+							data-animate
+							style={`--reveal-delay: ${index * 90}ms;`}
+							class="text-base leading-8 text-white/70 not-first:mt-6"
+						>
+							{paragraph}
+						</p>
+					))
+				}
+
+				<hr
+					data-animate
+					style="--reveal-delay: 90ms;"
+					class="my-10 border-white/10"
+				/>
+
+				{
+					story.map((paragraph, index) => (
+						<p
+							data-animate
+							style={`--reveal-delay: ${index * 90}ms;`}
+							class="text-base leading-8 text-white/70 not-first:mt-6"
+						>
+							{paragraph}
+						</p>
+					))
+				}
+			</div>
+		</div>
+	</div>
+</section>
+
+<script>
+	import "../../shared/ui/revealOnScroll";
+</script>
+
+<style>
+	/* Mismo sistema de reveal-on-scroll que el resto de secciones, pero con
+	   desplazamiento vertical: esta página es de lectura, no una vitrina. */
+	[data-animate] {
+		opacity: 0;
+		transform: translateY(1.5rem);
+		transition:
+			opacity 0.7s ease-out,
+			transform 0.7s ease-out;
+		transition-delay: var(--reveal-delay, 0ms);
+		will-change: opacity, transform;
+	}
+
+	[data-animate].is-visible {
+		opacity: 1;
+		transform: none;
+	}
+
+	@supports (animation-timeline: view()) {
+		[data-animate] {
+			opacity: 1;
+			transform: none;
+			transition: none;
+			animation: design-story-reveal linear both;
+			animation-timeline: view();
+			animation-range: entry 10% cover 30%;
+		}
+	}
+
+	@keyframes design-story-reveal {
+		from {
+			opacity: 0;
+			transform: translateY(1.5rem);
+		}
+		to {
+			opacity: 1;
+			transform: none;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		[data-animate] {
+			opacity: 1;
+			transform: none;
+			transition: none;
+			animation: none;
+		}
+	}
+</style>
