@@ -17,14 +17,14 @@ systems, product collections, and installation solutions.
   rutas dinámicas generadas por colección).
 - **Contacto** — formulario de contacto.
 
-## 🚀 Tecnologías
+## Tecnologías
 
 - **Astro** — sitio estático de marketing: entrega HTML con cero JS por
   defecto e hidrata solo lo interactivo (islas). Ideal para velocidad y SEO.
 - **Tailwind CSS** — estilos utility-first, consistentes y mantenibles.
 - **TypeScript** — tipado en configuración y componentes.
 
-## 📂 Arquitectura
+## Arquitectura
 
 Estructura *Screaming Architecture*: las carpetas gritan qué hace la
 aplicación, no qué framework la construye.
@@ -49,8 +49,3 @@ pnpm dev      # servidor local
 pnpm build    # build de producción
 ```
 
-## Pendiente / roadmap
-
-- [ ] Página 404 personalizada
-- [ ] Formulario de contacto conectado a backend/email
-- [ ] Optimización de imágenes (avif/webp, lazy loading)
