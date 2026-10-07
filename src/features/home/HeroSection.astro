@@ -5,10 +5,6 @@ import heroTerrace from "../../assets/images/hero-terrace.png";
 import heroPool from "../../assets/images/hero-pool.png";
 import Icon from "../../shared/ui/Icon.astro";
 
-// Recorrido editorial del hero: cada entrada es una diapositiva del fondo.
-// Las fotos se resuelven por convención: suelta un archivo nombrado con la
-// `key` (ej. `framing.jpg`) en src/assets/images/hero-slides/ y reemplaza el
-// fallback sin tocar código — la carpeta puede no existir todavía.
 const heroSlides = [
 	{ key: "framing", number: "01", label: "Framing" },
 	{ key: "drywall", number: "02", label: "Drywall" },
@@ -38,8 +34,6 @@ function getHeroSlideImage(key: string, index: number): ImageMetadata {
 	return heroFallbacks[index % heroFallbacks.length];
 }
 
-// La fotografía del hero se sirve en AVIF/WebP con srcset: el PNG original
-// pesa ~2.4 MB y sería un LCP innecesariamente caro.
 ---
 
 <section
@@ -78,7 +72,7 @@ function getHeroSlideImage(key: string, index: number): ImageMetadata {
 	</div>
 
 	<div
-		class="mx-auto flex w-full max-w-7xl flex-1 flex-col justify-center px-5 pb-10 pt-32 sm:px-8 sm:pb-12 sm:pt-36 lg:px-12 lg:pb-50"
+		class="mx-auto flex w-full max-w-7xl flex-1 flex-col justify-center px-5 pb-10 pt-32 sm:px-8 sm:pb-12 sm:pt-36 lg:px-12 lg:pb-35"
 	>
 		<div
 			class="max-w-6xl justify-center text-center lg:mx-auto lg:max-w-6xl"
