@@ -5,6 +5,7 @@
 import arrowRight from "../../assets/icons/arrow-right.svg?raw";
 import chat from "../../assets/icons/chat.svg?raw";
 import check from "../../assets/icons/check.svg?raw";
+import chevronDown from "../../assets/icons/chevron-down.svg?raw";
 import chevronsHorizontal from "../../assets/icons/chevrons-horizontal.svg?raw";
 import clock from "../../assets/icons/clock.svg?raw";
 import dropletOff from "../../assets/icons/droplet-off.svg?raw";
@@ -24,6 +25,7 @@ export const icons = {
 	"arrow-right": arrowRight,
 	chat,
 	check,
+	"chevron-down": chevronDown,
 	"chevrons-horizontal": chevronsHorizontal,
 	clock,
 	"droplet-off": dropletOff,

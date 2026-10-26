@@ -4,15 +4,7 @@ import type { ImageMetadata } from "astro";
 import heroTerrace from "../../assets/images/hero-terrace.png";
 import heroPool from "../../assets/images/hero-pool.png";
 import Icon from "../../shared/ui/Icon.astro";
-
-const heroSlides = [
-	{ key: "framing", number: "01", label: "Framing" },
-	{ key: "drywall", number: "02", label: "Drywall" },
-	{ key: "finishing", number: "03", label: "Finishing" },
-	{ key: "ceilings", number: "04", label: "Ceilings" },
-	{ key: "details", number: "05", label: "Details" },
-	{ key: "flooring", number: "06", label: "Flooring" },
-];
+import { heroStages } from "./heroStages";
 
 const heroSlideImages = import.meta.glob<{ default: ImageMetadata }>(
 	"../../assets/images/hero-slides/*.{png,jpg,jpeg,webp,avif}",
@@ -44,7 +36,7 @@ function getHeroSlideImage(key: string, index: number): ImageMetadata {
 >
 	<div class="absolute inset-0 -z-20" aria-hidden="true">
 		{
-			heroSlides.map((slide, index) => (
+			heroStages.map((slide, index) => (
 				<div
 					class="absolute inset-0"
 					data-hero-slide
@@ -123,7 +115,7 @@ function getHeroSlideImage(key: string, index: number): ImageMetadata {
 				</a>
 
 				<a
-					href="/services"
+					href="/#services"
 					class="group inline-flex min-h-13 items-center gap-3 rounded-full bg-cta pl-7 pr-2.5 py-2.5 text-sm font-bold uppercase tracking-wide text-white shadow-lg shadow-cta/30 transition duration-300 ease-out hover:-translate-y-0.5 hover:bg-cta-hover hover:shadow-xl hover:shadow-cta/40 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white sm:text-base"
 				>
 					View Our Services
@@ -139,7 +131,8 @@ function getHeroSlideImage(key: string, index: number): ImageMetadata {
 
 
 		<nav
-			class="hero-enter mt-10 pt-12 sm:absolute sm:inset-x-0 sm:bottom-0 sm:mt-0 sm:px-8 sm:pb-10 sm:pt-12 lg:px-20 lg:pb-12"
+			id="services"
+			class="hero-enter mt-10 scroll-mt-28 pt-12 sm:absolute sm:inset-x-0 sm:bottom-0 sm:mt-0 sm:px-8 sm:pb-10 sm:pt-12 lg:px-20 lg:pb-12"
 			style="--enter-delay: 360ms;"
 			aria-label="Construction stages"
 		>
@@ -148,12 +141,13 @@ function getHeroSlideImage(key: string, index: number): ImageMetadata {
 					class="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 border-t border-white/15 pt-5"
 				>
 				{
-					heroSlides.map((slide, index) => (
+					heroStages.map((slide, index) => (
 						<li>
 							<button
 								type="button"
 								class="group relative flex cursor-pointer items-baseline gap-2.5 pb-1.5 text-[0.7rem] font-semibold uppercase tracking-[0.2em] sm:text-xs"
 								data-hero-tab
+								data-stage-key={slide.key}
 								data-active={index === 0 ? "true" : undefined}
 								aria-current={index === 0 ? "true" : undefined}
 							>
@@ -182,6 +176,9 @@ function getHeroSlideImage(key: string, index: number): ImageMetadata {
 		);
 		const tabs = Array.from(
 			hero.querySelectorAll<HTMLButtonElement>("[data-hero-tab]"),
+		);
+		const stageIndex = new Map(
+			tabs.map((tab, index) => [tab.dataset.stageKey, index]),
 		);
 		const reducedMotion = window.matchMedia(
 			"(prefers-reduced-motion: reduce)",
@@ -229,8 +226,17 @@ function getHeroSlideImage(key: string, index: number): ImageMetadata {
 			});
 		});
 
-
-		play();
+		const selectStageFromHash = () => {
+			const key = window.location.hash.replace(/^#service-/, "");
+			const index = stageIndex.get(key);
+			if (window.location.hash.startsWith("#service-") && index !== undefined) {
+				activate(index);
+				play();
+			}
+		};
+		window.addEventListener("hashchange", selectStageFromHash);
+		selectStageFromHash();
+		if (!window.location.hash.startsWith("#service-")) play();
 	}
 </script>
 
